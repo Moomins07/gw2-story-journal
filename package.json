@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": ".venv/bin/python -m flask --app app run --debug",
+    "css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
+    "dev": "concurrently --kill-others --names css,flask \"npm run css\" \"npm run server\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
+    "concurrently": "^10.0.5",
     "tailwindcss": "^4.3.3"
   }
 }
