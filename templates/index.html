@@ -207,9 +207,9 @@
       <div
         class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(9,9,11,0.5)_100%)]"
       ></div>
-      <!-- Rays sit above the contrast overlays so the sunlight stays visible.
-           The masked lower edge keeps light off the foreground ledge. -->
-      <div class="sunlight absolute inset-0"></div>
+      <!-- Overscan keeps the rotating ray layer's edges outside the viewport.
+           Its soft mask fades light out before it reaches the foreground ledge. -->
+      <div class="sunlight absolute -inset-[12%]"></div>
       <!-- CSS animates mist; atmosphere.js positions the cursor glow. -->
       <div
         class="mist absolute -inset-x-1/2 bottom-0 h-1/2 opacity-20 blur-3xl motion-safe:animate-mist-drift"

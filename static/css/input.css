@@ -332,7 +332,8 @@ html.atmosphere-paused #atmosphere * {
 /* Warm, broad rays originate near the top-right sky. Screen blending brightens
    the painting; a vertical mask fades them before they reach the foreground.
    Placing this layer above the dark overlays makes it visibly different from
-   the smaller cursor-following glow. */
+   the smaller cursor-following glow. The layer extends beyond the viewport,
+   and both vertical edges fade out, preventing a visible rotating rectangle. */
 .sunlight {
   background: conic-gradient(
     from 155deg at 78% -8%,
@@ -348,11 +349,12 @@ html.atmosphere-paused #atmosphere * {
   filter: blur(10px);
   mask-image: linear-gradient(
     to bottom,
-    black 15%,
-    rgb(0 0 0 / 75%) 45%,
-    transparent 82%
+    transparent 0%,
+    black 18%,
+    rgb(0 0 0 / 65%) 40%,
+    transparent 68%
   );
-  transform-origin: -78% 0;
+  transform-origin: 78% 0;
   animation: sunlight-drift 20s ease-in-out infinite alternate;
 }
 @keyframes sunlight-drift {
