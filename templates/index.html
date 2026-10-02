@@ -4,17 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Our Story — GW2 Journal</title>
-    <!-- Use your shared Charr emblem as the browser tab icon, avoiding a missing /favicon.ico request. -->
+    <!-- A tiny 32px PNG keeps the tab icon from downloading the full-size emblem. -->
     <link
       rel="icon"
       type="image/png"
-      href="{{ url_for('static', filename='images/pyre-emblem-colour.png') }}"
+      href="{{ url_for('static', filename='images/favicon.png') }}"
     />
     <!-- Flask/Jinja url_for creates asset URLs. Preload the logo for the intro. -->
     <link
       rel="preload"
       as="image"
-      href="{{ url_for('static', filename='images/pyre-emblem-colour.png') }}"
+      href="{{ url_for('static', filename='images/pyre-emblem-colour.webp') }}"
+    />
+    <!-- Discover the largest scenery image before CSS/scripts finish loading. -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      fetchpriority="high"
+      href="{{ url_for('static', filename='images/wallpaper-distance.webp') }}"
     />
     <!-- Intro runs early; deferred scripts wait for HTML before selecting elements. -->
     <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
@@ -44,7 +52,7 @@
     >
       <div class="intro-art" aria-hidden="true">
         <img
-          src="{{ url_for('static', filename='images/wallpaper.png') }}"
+          src="{{ url_for('static', filename='images/wallpaper.webp') }}"
           alt=""
           class="absolute inset-0 h-full w-full object-cover object-right"
         />
@@ -97,7 +105,7 @@
           <!-- Wrapper groups animate independently; the three images share identical coordinates. -->
           <g class="pyre-part pyre-part--green">
             <image
-              href="{{ url_for('static', filename='images/pyre-emblem-colour.png') }}"
+              href="{{ url_for('static', filename='images/pyre-emblem-colour.webp') }}"
               width="1280"
               height="1280"
               filter="url(#pyre-green)"
@@ -105,7 +113,7 @@
           </g>
           <g class="pyre-part pyre-part--purple">
             <image
-              href="{{ url_for('static', filename='images/pyre-emblem-colour.png') }}"
+              href="{{ url_for('static', filename='images/pyre-emblem-colour.webp') }}"
               width="1280"
               height="1280"
               filter="url(#pyre-purple)"
@@ -113,7 +121,7 @@
           </g>
           <g class="pyre-part pyre-part--flame">
             <image
-              href="{{ url_for('static', filename='images/pyre-emblem-colour.png') }}"
+              href="{{ url_for('static', filename='images/pyre-emblem-colour.webp') }}"
               width="1280"
               height="1280"
               filter="url(#pyre-flame)"
@@ -158,8 +166,8 @@
           <div class="landscape-depth absolute inset-0">
             <img
               id="landscape"
-              src="{{ url_for('static', filename='images/wallpaper-distance.png') }}"
-              data-fallback="{{ url_for('static', filename='images/wallpaper.png') }}"
+              src="{{ url_for('static', filename='images/wallpaper-distance.webp') }}"
+              data-fallback="{{ url_for('static', filename='images/wallpaper.webp') }}"
               alt=""
               class="absolute inset-0 h-full w-full motion-safe:animate-wallpaper-drift"
               fetchpriority="high"
@@ -167,14 +175,14 @@
             <!-- Two clipped views separate islands from one transparent source; CSS hovers each independently. -->
             <div class="island-hover island-hover--left absolute inset-0">
               <img
-                src="{{ url_for('static', filename='images/floating-islands.png') }}"
+                src="{{ url_for('static', filename='images/floating-islands.webp') }}"
                 alt=""
                 class="island-art island-art--left"
               />
             </div>
             <div class="island-hover island-hover--right absolute inset-0">
               <img
-                src="{{ url_for('static', filename='images/floating-islands.png') }}"
+                src="{{ url_for('static', filename='images/floating-islands.webp') }}"
                 alt=""
                 class="island-art island-art--right"
               />
@@ -183,7 +191,7 @@
           <!-- The characters, feet and ledge stay together as one unchanged, stationary image. -->
           <img
             id="charr-foreground"
-            src="{{ url_for('static', filename='images/charr-ledge-foreground.png') }}"
+            src="{{ url_for('static', filename='images/charr-ledge-foreground.webp') }}"
             alt=""
             class="absolute inset-0 h-full w-full"
           />
