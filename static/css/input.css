@@ -88,7 +88,7 @@
   .pointer-glow {
     background: radial-gradient(
       500px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-      rgb(255 216 151 / 12%),
+      rgb(var(--site-accent-rgb, 255 216 151) / 12%),
       transparent 75%
     );
   }
@@ -381,7 +381,7 @@ html.atmosphere-paused #atmosphere * {
   content: 'Our Story';
   position: absolute; inset: 0;
   color: transparent;
-  background: linear-gradient(110deg, transparent 35%, #ffe7aa 50%, transparent 65%);
+  background: linear-gradient(110deg, transparent 35%, var(--site-shimmer, #ffe7aa) 50%, transparent 65%);
   background-size: 250% 100%; background-position: 140% 0;
   background-clip: text;
   pointer-events: none; opacity: 0;
@@ -396,14 +396,14 @@ html.atmosphere-paused #atmosphere * {
 }
 /* Two quiet, compact cards support long chapter titles and memory text. */
 .journal-preview { transition: border-color 180ms ease, background-color 180ms ease; }
-.journal-preview:hover { border-color: rgb(253 230 138 / 45%); background-color: rgb(9 9 11 / 80%); }
+.journal-preview:hover { border-color: rgb(var(--site-accent-rgb, 253 230 138) / 45%); background-color: rgb(9 9 11 / 80%); }
 .memory-excerpt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
 .journal-preview span { overflow-wrap: anywhere; }
 .journal-dialog { margin: auto; max-height: calc(100svh - 2rem); overflow-y: auto; }
 .journal-dialog::backdrop { background: rgb(0 0 0 / 65%); backdrop-filter: blur(5px); }
 .journal-label { display: block; margin-top: 1rem; font-size: .75rem; color: #d6d3d1; }
 .journal-input { display: block; width: 100%; margin-top: .4rem; padding: .6rem .75rem; border: 1px solid #44403c; border-radius: .25rem; background: #18181b; color: #f5f5f4; font-size: .875rem; }
-.journal-input:focus-visible { outline: 2px solid #fde68a; outline-offset: 2px; }
+.journal-input:focus-visible { outline: 2px solid var(--site-accent, #fde68a); outline-offset: 2px; }
 /* Hotspots use the same source-image coordinates as the stationary artwork.
    These are interaction regions only: no character image is animated or altered. */
 .character-hotspots { z-index: 10; }
@@ -458,4 +458,41 @@ html.atmosphere-paused #atmosphere * {
 @media (prefers-reduced-motion: reduce) {
   .select-portrait > img { transition: none; transform: none !important; }
   .profile-open .character-card, [data-character]:focus-within .character-card, [data-character]:hover .character-card { animation: none; }
+}
+
+/* Character-theme easter egg. Tailwind's amber accent tokens are overridden
+   locally so existing text, borders, focus rings and sliders follow the choice.
+   Character identities keep their own green/purple colours in either theme. */
+html[data-character-theme="green"] {
+  --color-amber-100: #d1fae5;
+  --color-amber-200: #6ee7b7;
+  --site-accent: #6ee7b7;
+  --site-accent-rgb: 110 231 183;
+  --site-shimmer: #d1fae5;
+}
+html[data-character-theme="purple"] {
+  --color-amber-100: #ede9fe;
+  --color-amber-200: #c4b5fd;
+  --site-accent: #c4b5fd;
+  --site-accent-rgb: 196 181 253;
+  --site-shimmer: #ede9fe;
+}
+/* The chapter button uses custom art colours rather than Tailwind amber tokens,
+   so map those explicitly when a character palette is selected. */
+html[data-character-theme] #load-chapters {
+  color: var(--color-amber-100);
+  border-color: var(--site-accent);
+  background-image: linear-gradient(135deg, rgb(var(--site-accent-rgb) / 18%), #17191c);
+  box-shadow: inset 0 0 0 1px rgb(var(--site-accent-rgb) / 12%), 0 4px 16px rgb(0 0 0 / 25%);
+  outline-color: var(--site-accent);
+}
+html[data-character-theme] #load-chapters:hover {
+  box-shadow: inset 0 0 0 1px rgb(var(--site-accent-rgb) / 20%), 0 0 20px rgb(var(--site-accent-rgb) / 20%);
+}
+html[data-character-theme] .story-heading { color: var(--color-amber-100); }
+html[data-character-theme] .journal-preview { border-color: rgb(var(--site-accent-rgb) / 30%); }
+.character-trigger[aria-pressed="true"] .character-nameplate { box-shadow: 0 0 14px currentColor; }
+/* Transition UI colours only; reduced-motion users get immediate palette changes. */
+@media (prefers-reduced-motion: no-preference) {
+  .story-heading, .journal-preview, .character-nameplate { transition: color 250ms ease, border-color 250ms ease, box-shadow 250ms ease; }
 }

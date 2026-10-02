@@ -24,6 +24,8 @@
       fetchpriority="high"
       href="{{ url_for('static', filename='images/wallpaper-distance.webp') }}"
     />
+    <!-- Restore character accent colours before the homepage is painted. -->
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <!-- Intro runs early; deferred scripts wait for HTML before selecting elements. -->
     <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
     <!-- output.css is generated; edit input.css and Tailwind utilities here, then rebuild. -->
@@ -408,6 +410,7 @@
             <span id="memory-date" class="mt-1 block text-[10px] text-stone-400">A page waiting to be written</span>
           </button>
         </div>
+        <p id="theme-status" class="sr-only" role="status"></p>
         <p id="home-save-status" class="sr-only" role="status"></p>
         <!-- Future chapter code inserts content here; aria-live politely announces newly loaded content. -->
         <div id="chapters" class="mt-8" aria-live="polite"></div>
