@@ -13,7 +13,7 @@
   if (!audio || !controls || !toggle || !slider) return;
   // Desired volume uses 0–1; actual audio.volume changes during fading. pending prevents duplicate play requests.
   const key = 'gw2-background-music';
-  let volume = .25, muted = false, playing = false, pending = false, failed = false;
+  let volume = .15, muted = false, playing = false, pending = false, failed = false;
   // Wait for the intro unless this visit skips it.
   let ready = !document.documentElement.classList.contains('intro-pending');
   let fadeFrame = 0;
@@ -30,7 +30,7 @@
 
   // Store chosen settings, not an intermediate volume part-way through a fade.
   function save() {
-    try { localStorage.setItem(key, JSON.stringify({ volume, muted })); } catch {}
+    try { localStorage.setItem(key, JSON.stringify({ volume, muted })); } catch { }
   }
   // Synchronise icon, percentage, tooltip and screen-reader label; aria-pressed reports enabled playback.
   function update() {
@@ -75,7 +75,7 @@
       if (ready && !muted) fadeTo(volume);
       status.textContent = ready && !muted ? 'Background music playing' : '';
       update();
-    // Autoplay rejection is recoverable: leave the speaker available for a gesture retry.
+      // Autoplay rejection is recoverable: leave the speaker available for a gesture retry.
     }).catch(() => {
       pending = false;
       status.textContent = ready ? 'Select the speaker to play background music' : '';
