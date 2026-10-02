@@ -186,12 +186,3 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
 }
 /* Keep the music control out of the opening cinematic. */
 .intro-pending #music-controls { visibility: hidden; }
-
-/* Local wind distortion uses the SVG map in index.html, not a whole-image transform.
-   Keep the ordinary image when motion is reduced, assets fail or the tab is paused. */
-.foreground-art { filter: url(#cloth-wind); }
-@media (prefers-reduced-motion: reduce) {
-  .foreground-art { filter: none; }
-}
-.scene-fallback .foreground-art,
-html.atmosphere-paused .foreground-art { filter: none; }
