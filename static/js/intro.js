@@ -22,6 +22,7 @@
     if (intro) intro.hidden = true;
     root.classList.remove('intro-pending', 'intro-playing', 'intro-revealing');
     content.forEach(element => { element.inert = false; });
+    document.dispatchEvent(new Event('story-intro-finished'));
     document.removeEventListener('keydown', onKey);
     motion.removeEventListener('change', onMotion);
     if (restoreFocus) {

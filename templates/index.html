@@ -8,6 +8,7 @@
     <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
     <script defer src="{{ url_for('static', filename='js/atmosphere.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/music.js') }}"></script>
   </head>
   <body class="isolate min-h-screen bg-zinc-950 text-stone-100">
     <!-- A once-per-session cinematic; the homepage remains usable without JavaScript. -->
@@ -76,7 +77,29 @@
 
     <header class="mx-auto flex max-w-7xl items-center justify-between border-b border-amber-100/15 px-6 py-6 md:px-12">
       <a href="{{ url_for('home') }}" class="font-serif text-lg tracking-[0.2em] text-stone-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-200">OUR STORY</a>
-      <span class="text-[10px] uppercase tracking-[0.3em] text-amber-100/70">A journal of Tyria</span>
+      <div class="flex items-center gap-4 sm:gap-6">
+        <span class="hidden text-[10px] uppercase tracking-[0.3em] text-amber-100/70 sm:inline">A journal of Tyria</span>
+        <div id="music-controls" class="group relative" hidden>
+          <button id="music-toggle" type="button" aria-label="Play background music" aria-pressed="false"
+            class="flex h-11 w-11 items-center justify-center rounded-full border border-amber-100/20 bg-zinc-950/35 text-amber-100/85 backdrop-blur-sm transition-colors hover:border-amber-200/60 hover:text-amber-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-200">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4Z" />
+              <g id="music-waves" hidden><path d="M15 8a6 6 0 0 1 0 8 M18 5a10 10 0 0 1 0 14" /></g>
+              <g id="music-off"><path d="m16 9 5 6 m0-6-5 6" /></g>
+            </svg>
+          </button>
+          <div class="pointer-events-none absolute right-0 top-full z-20 w-52 pt-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+            <div class="rounded-lg border border-amber-100/20 bg-zinc-950/90 p-4 shadow-lg backdrop-blur-xl">
+              <label for="music-volume" class="flex justify-between text-[10px] uppercase tracking-[0.2em] text-amber-100/80">
+                Music <output id="music-volume-value" for="music-volume">25%</output>
+              </label>
+              <input id="music-volume" type="range" min="0" max="100" step="1" value="25" aria-label="Background music volume"
+                class="mt-3 h-6 w-full cursor-pointer accent-amber-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-200" />
+            </div>
+          </div>
+          <span id="music-status" class="sr-only" role="status" aria-live="polite"></span>
+        </div>
+      </div>
     </header>
 
     <main class="mx-auto flex min-h-[calc(100svh-80px)] max-w-7xl flex-col justify-center px-6 py-16 md:px-12">
@@ -112,5 +135,6 @@
         Every adventure leaves a story
       </p>
     </main>
+    <audio id="background-music" src="{{ url_for('static', filename='sounds/background-music.mp3') }}" loop preload="none"></audio>
   </body>
 </html>

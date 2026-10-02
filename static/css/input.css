@@ -154,3 +154,5 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   .intro-pending { overflow: auto; }
   .intro-pending body > header, .intro-pending body > main { opacity: 1; }
 }
+/* Keep the music control out of the opening cinematic. */
+.intro-pending #music-controls { visibility: hidden; }
