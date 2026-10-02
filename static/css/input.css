@@ -9,16 +9,30 @@
   --animate-mist-drift: mist-drift 28s ease-in-out infinite alternate;
   --animate-hero-reveal: hero-reveal 900ms ease-out both;
   @keyframes wallpaper-drift {
-    from { transform: scale(1.015) translate3d(-0.25%, 0, 0); }
-    to { transform: scale(1.045) translate3d(0.25%, -0.5%, 0); }
+    from {
+      transform: scale(1.015) translate3d(-0.25%, 0, 0);
+    }
+    to {
+      transform: scale(1.045) translate3d(0.25%, -0.5%, 0);
+    }
   }
   @keyframes mist-drift {
-    from { transform: translate3d(-6%, 0, 0); }
-    to { transform: translate3d(6%, -5%, 0); }
+    from {
+      transform: translate3d(-6%, 0, 0);
+    }
+    to {
+      transform: translate3d(6%, -5%, 0);
+    }
   }
   @keyframes hero-reveal {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
@@ -37,64 +51,97 @@
   .landscape-depth {
     transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 0);
   }
-  /* The foreground shares the same cover coordinates but never receives a transform. */
-  .foreground-art { object-fit: fill; }
-  .island-hover--left { animation: island-hover-left 13s ease-in-out -4s infinite; }
-  .island-hover--right { animation: island-hover-right 19s ease-in-out -9s infinite; }
+  .island-hover--left {
+    animation: island-hover-left 13s ease-in-out -4s infinite;
+  }
+  .island-hover--right {
+    animation: island-hover-right 19s ease-in-out -9s infinite;
+  }
   /* Two islands share one transparent source; each view clips out the other island. */
-  .island-art { position: absolute; object-fit: fill; }
+  .island-art {
+    position: absolute;
+  }
   /* Placement compensates for generated asset scale; inset clips away the other island. */
   .island-art--left {
-    left: 7.2%; top: -1%; width: 70%; height: 70%;
+    left: 7.2%;
+    top: -1%;
+    width: 70%;
+    height: 70%;
     clip-path: inset(0 45% 0 0);
-    opacity: .85;
+    opacity: 0.85;
   }
   .island-art--right {
-    left: 25.2%; top: -2.1%; width: 60%; height: 60%;
+    left: 25.2%;
+    top: -2.1%;
+    width: 60%;
+    height: 60%;
     clip-path: inset(0 0 0 55%);
-    opacity: .9;
+    opacity: 0.9;
   }
   /* Radial gradients look like mist when combined with blur and drifting animation in the HTML. */
   .mist {
-    background: radial-gradient(ellipse at 35% 80%, #e2e8f0 0%, transparent 55%), radial-gradient(ellipse at 75% 90%, #d4b784 0%, transparent 45%);
+    background:
+      radial-gradient(ellipse at 35% 80%, #e2e8f0 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 90%, #d4b784 0%, transparent 45%);
   }
   /* A radial light follows pointer coordinates from atmosphere.js. */
   .pointer-glow {
-    background: radial-gradient(500px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgb(255 216 151 / 12%), transparent 75%);
-  }
-  /* Conic gradient wedges form rays; screen blending lightens rather than covers the scene. */
-  .sunlight {
-    background: conic-gradient(from 160deg at 48% 5%, transparent 0deg, rgb(255 231 177 / 12%) 12deg, transparent 20deg, rgb(255 240 209 / 8%) 30deg, transparent 43deg);
-    mix-blend-mode: screen;
-    animation: sunlight-shift 16s ease-in-out infinite alternate;
+    background: radial-gradient(
+      500px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+      rgb(255 216 151 / 12%),
+      transparent 75%
+    );
   }
 }
 /* Different amplitudes, durations and phase delays prevent lockstep island motion. */
 @keyframes island-hover-left {
-  0%, 100% { transform: translateY(5px); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(5px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 @keyframes island-hover-right {
-  0%, 100% { transform: translateY(-7px); }
-  50% { transform: translateY(7px); }
-}
-@keyframes sunlight-shift {
-  from { opacity: .3; transform: rotate(-3deg) scale(1.05); }
-  to { opacity: .7; transform: rotate(3deg) scale(1.08); }
+  0%,
+  100% {
+    transform: translateY(-7px);
+  }
+  50% {
+    transform: translateY(7px);
+  }
 }
 /* Asset failures use the untouched wallpaper, disable its movement and hide duplicated island layers. */
-.scene-fallback .landscape-depth { transform: none; }
-.scene-fallback #landscape { animation: none; }
-.scene-fallback .island-hover { display: none; }
+.scene-fallback .landscape-depth {
+  transform: none;
+}
+.scene-fallback #landscape {
+  animation: none;
+}
+.scene-fallback .island-hover {
+  display: none;
+}
 /* Honour the operating-system motion preference while keeping the page content visible. */
 @media (prefers-reduced-motion: reduce) {
-  .mist, .pointer-glow, .sunlight, #ember-field { display: none; }
+  .mist,
+  .pointer-glow,
+  #ember-field {
+    display: none;
+  }
   /* atmosphere.js supplies these custom properties; only distant scenery gets the transform. */
-  .landscape-depth { transform: none; }
-  .island-hover { animation: none; transform: none; }
+  .landscape-depth {
+    transform: none;
+  }
+  .island-hover {
+    animation: none;
+    transform: none;
+  }
 }
-/* atmosphere.js adds this when hidden/unfocused; pause CSS motion alongside canvas drawing. */
-html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
+/* atmosphere.js adds this when the tab is hidden; pause CSS motion alongside canvas drawing. */
+html.atmosphere-paused #atmosphere * {
+  animation-play-state: paused;
+}
 /* Once-per-session Charr-and-embers cinematic. Default state is no overlay. */
 /* Full-screen intro; JavaScript toggles pending, playing and revealing classes on <html>. */
 .story-intro {
@@ -109,45 +156,98 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   transition: opacity 1.05s ease-in-out;
 }
 /* No-JavaScript default is hidden; pending prepares the overlay until DOM setup completes. */
-.story-intro[hidden] { display: none; }
-.intro-pending .story-intro[hidden] { display: grid; }
-.intro-pending { overflow: hidden; }
+.story-intro[hidden] {
+  display: none;
+}
+.intro-pending .story-intro[hidden] {
+  display: grid;
+}
+.intro-pending {
+  overflow: hidden;
+}
 .intro-pending body > header,
-.intro-pending body > main { opacity: 0; }
-.intro-pending body > main section { animation-play-state: paused; }
+.intro-pending body > main {
+  opacity: 0;
+}
+.intro-pending body > main section {
+  animation-play-state: paused;
+}
 /* Crossfade content in while the overlay fades out; JavaScript removes the overlay after the transition. */
 .intro-revealing body > header,
-.intro-revealing body > main { opacity: 1; transition: opacity 800ms ease; }
-.intro-revealing body > main section { animation-play-state: running; }
-.intro-revealing .story-intro { opacity: 0; pointer-events: none; }
+.intro-revealing body > main {
+  opacity: 1;
+  transition: opacity 800ms ease;
+}
+.intro-revealing body > main section {
+  animation-play-state: running;
+}
+.intro-revealing .story-intro {
+  opacity: 0;
+  pointer-events: none;
+}
 /* Subdued, blurred artwork behind the logo introduces the destination without competing with it. */
-.intro-art { position: absolute; inset: -5%; opacity: .12; filter: blur(3px) saturate(.6); }
+.intro-art {
+  position: absolute;
+  inset: -5%;
+  opacity: 0.12;
+  filter: blur(3px) saturate(0.6);
+}
 .intro-halo {
   position: absolute;
   width: min(80vw, 540px);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(245 185 94 / 16%), rgb(183 114 41 / 5%) 45%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgb(245 185 94 / 16%),
+    rgb(183 114 41 / 5%) 45%,
+    transparent 70%
+  );
 }
-.intro-logo { filter: drop-shadow(0 0 16px rgb(240 93 29 / 40%)); }
-/* Glow is applied outside the masked image; no rectangular clip bounds. */
-.intro-logo { overflow: visible; }
+.intro-logo {
+  filter: drop-shadow(0 0 16px rgb(240 93 29 / 40%));
+}
+/* The overflow-visible utility in index.html prevents clipping the logo glow. */
 /* Reveal each colour separately: wife's green Charr, husband's purple Charr, shared fire.
    Small sideways movements draw the pair together; the flame rises between them.
    All parts finish before the existing 2.4-second homepage crossfade begins. */
-.pyre-part { transform-box: view-box; transform-origin: center; }
-.intro-playing .pyre-part { animation: pyre-part-arrive 700ms ease-out both; }
-.pyre-part--green { --part-x: -18px; --part-y: 0px; }
-.pyre-part--purple { --part-x: 18px; --part-y: 0px; }
-.pyre-part--flame { --part-x: 0px; --part-y: 16px; }
-.intro-playing .pyre-part--green { animation-delay: 100ms; }
-.intro-playing .pyre-part--purple { animation-delay: 550ms; }
-.intro-playing .pyre-part--flame { animation-delay: 1050ms; }
-.intro-playing .intro-halo { animation: intro-halo 3.5s ease-out both; }
+.intro-playing .pyre-part {
+  animation: pyre-part-arrive 700ms ease-out both;
+}
+.pyre-part--green {
+  --part-x: -18px;
+  --part-y: 0px;
+}
+.pyre-part--purple {
+  --part-x: 18px;
+  --part-y: 0px;
+}
+.pyre-part--flame {
+  --part-x: 0px;
+  --part-y: 16px;
+}
+.intro-playing .pyre-part--green {
+  animation-delay: 100ms;
+}
+.intro-playing .pyre-part--purple {
+  animation-delay: 550ms;
+}
+.intro-playing .pyre-part--flame {
+  animation-delay: 1050ms;
+}
+.intro-playing .intro-halo {
+  animation: intro-halo 3.5s ease-out both;
+}
 /* Stagger text after the logo; trailing timing values are animation delays. */
-.intro-playing .intro-kicker { animation: intro-text 650ms ease-out 450ms both; }
-.intro-playing .intro-wordmark { animation: intro-text 900ms ease-out 750ms both; }
-.intro-playing .intro-caption { animation: intro-text 700ms ease-out 1100ms both; }
+.intro-playing .intro-kicker {
+  animation: intro-text 650ms ease-out 450ms both;
+}
+.intro-playing .intro-wordmark {
+  animation: intro-text 900ms ease-out 750ms both;
+}
+.intro-playing .intro-caption {
+  animation: intro-text 700ms ease-out 1100ms both;
+}
 /* intro.js supplies each span position/delay/travel; CSS animates its rise and opacity. */
 .intro-ember {
   position: absolute;
@@ -161,28 +261,113 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   animation: intro-ember 4s linear var(--delay) infinite;
 }
 @keyframes pyre-part-arrive {
-  from { opacity: 0; transform: translate(var(--part-x), var(--part-y)); }
-  to { opacity: 1; transform: translate(0, 0); }
+  from {
+    opacity: 0;
+    transform: translate(var(--part-x), var(--part-y));
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
 }
 @keyframes intro-text {
-  from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
-  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 @keyframes intro-halo {
-  from { opacity: 0; transform: scale(.5); }
-  55% { opacity: 1; transform: scale(1); }
-  to { opacity: .3; transform: scale(1.6); }
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0.3;
+    transform: scale(1.6);
+  }
 }
 @keyframes intro-ember {
-  0% { opacity: 0; transform: translate3d(0, 0, 0); }
-  20%, 70% { opacity: .7; }
-  100% { opacity: 0; transform: translate3d(var(--travel), -100vh, 0); }
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  20%,
+  70% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--travel), -100vh, 0);
+  }
 }
 /* Honour the operating-system motion preference while keeping the page content visible. */
 @media (prefers-reduced-motion: reduce) {
-  .story-intro, .intro-pending .story-intro[hidden] { display: none; }
-  .intro-pending { overflow: auto; }
-  .intro-pending body > header, .intro-pending body > main { opacity: 1; }
+  .story-intro,
+  .intro-pending .story-intro[hidden] {
+    display: none;
+  }
+  .intro-pending {
+    overflow: auto;
+  }
+  .intro-pending body > header,
+  .intro-pending body > main {
+    opacity: 1;
+  }
 }
 /* Keep the music control out of the opening cinematic. */
-.intro-pending #music-controls { visibility: hidden; }
+.intro-pending #music-controls {
+  visibility: hidden;
+}
+
+/* Warm, broad rays originate near the top-right sky. Screen blending brightens
+   the painting; a vertical mask fades them before they reach the foreground.
+   Placing this layer above the dark overlays makes it visibly different from
+   the smaller cursor-following glow. */
+.sunlight {
+  background: conic-gradient(
+    from 155deg at 78% -8%,
+    transparent 0deg,
+    rgb(255 225 163 / 38%) 5deg,
+    transparent 11deg,
+    rgb(255 235 185 / 30%) 17deg,
+    transparent 24deg,
+    rgb(255 215 143 / 24%) 31deg,
+    transparent 39deg
+  );
+  mix-blend-mode: screen;
+  filter: blur(10px);
+  mask-image: linear-gradient(
+    to bottom,
+    black 15%,
+    rgb(0 0 0 / 75%) 45%,
+    transparent 82%
+  );
+  transform-origin: 78% 0;
+  animation: sunlight-drift 20s ease-in-out infinite alternate;
+}
+@keyframes sunlight-drift {
+  from {
+    opacity: 0.6;
+    transform: rotate(-2deg) scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(2deg) scale(1.04);
+  }
+}
+/* Respect reduced motion without introducing a new animated lighting layer. */
+@media (prefers-reduced-motion: reduce) {
+  .sunlight {
+    display: none;
+  }
+}
