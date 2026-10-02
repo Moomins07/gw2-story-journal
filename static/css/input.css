@@ -95,7 +95,7 @@
 }
 /* atmosphere.js adds this when hidden/unfocused; pause CSS motion alongside canvas drawing. */
 html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
-/* Once-per-session dragon-and-embers cinematic. Default state is no overlay. */
+/* Once-per-session Charr-and-embers cinematic. Default state is no overlay. */
 /* Full-screen intro; JavaScript toggles pending, playing and revealing classes on <html>. */
 .story-intro {
   position: fixed;
@@ -132,9 +132,17 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
 .intro-logo { filter: drop-shadow(0 0 16px rgb(240 93 29 / 40%)); }
 /* Glow is applied outside the masked image; no rectangular clip bounds. */
 .intro-logo { overflow: visible; }
-/* Normalised dash offset 1 to 0 exposes the curved white SVG brush mask in index.html. */
-.logo-brush-stroke { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
-.intro-playing .logo-brush-stroke { animation: logo-brush-draw 2s linear 100ms both; }
+/* Reveal each colour separately: wife's green Charr, husband's purple Charr, shared fire.
+   Small sideways movements draw the pair together; the flame rises between them.
+   All parts finish before the existing 2.4-second homepage crossfade begins. */
+.pyre-part { transform-box: view-box; transform-origin: center; }
+.intro-playing .pyre-part { animation: pyre-part-arrive 700ms ease-out both; }
+.pyre-part--green { --part-x: -18px; --part-y: 0px; }
+.pyre-part--purple { --part-x: 18px; --part-y: 0px; }
+.pyre-part--flame { --part-x: 0px; --part-y: 16px; }
+.intro-playing .pyre-part--green { animation-delay: 100ms; }
+.intro-playing .pyre-part--purple { animation-delay: 550ms; }
+.intro-playing .pyre-part--flame { animation-delay: 1050ms; }
 .intro-playing .intro-halo { animation: intro-halo 3.5s ease-out both; }
 /* Stagger text after the logo; trailing timing values are animation delays. */
 .intro-playing .intro-kicker { animation: intro-text 650ms ease-out 450ms both; }
@@ -152,11 +160,9 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   box-shadow: 0 0 12px 3px rgb(255 163 65 / 40%);
   animation: intro-ember 4s linear var(--delay) infinite;
 }
-/* This single stroke reveals all details, with no late fill or rectangular wipe. */
-@keyframes logo-brush-draw {
-  from { stroke-dashoffset: 1; opacity: 0; }
-  3% { opacity: 1; }
-  to { stroke-dashoffset: 0; opacity: 1; }
+@keyframes pyre-part-arrive {
+  from { opacity: 0; transform: translate(var(--part-x), var(--part-y)); }
+  to { opacity: 1; transform: translate(0, 0); }
 }
 @keyframes intro-text {
   from { opacity: 0; transform: translateY(12px); filter: blur(4px); }

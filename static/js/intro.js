@@ -68,7 +68,7 @@
       emberField.append(ember);
     }
     intro.hidden = false;
-    // This class starts brush, title and halo animations defined in input.css.
+    // This class starts the three emblem parts, title and halo animations defined in input.css.
     root.classList.add('intro-playing');
     skip.addEventListener('click', finish);
     document.addEventListener('keydown', onKey);
