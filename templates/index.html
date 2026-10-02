@@ -22,6 +22,21 @@
       <p class="mt-6 text-lg text-stone-400">
         Our shared Guild Wars 2 story journal.
       </p>
+      <!-- Wire this button to /api/chapters in the JavaScript learning step. -->
+      <button
+        id="load-chapters"
+        class="group mt-8 inline-flex min-h-13 cursor-pointer items-center justify-center gap-[0.85rem] rounded-[5px] border border-[#c9a365] bg-linear-135 from-[#29251f] to-[#17191c] px-8 py-[0.8rem] font-serif text-[1.05rem] leading-[1.4] text-[#f5dfb2] shadow-[inset_0_0_0_1px_rgb(244_214_158_/_10%),0_4px_16px_rgb(0_0_0_/_25%)] transition-[border-color,box-shadow,transform] duration-180 hover:border-[#efd09a] hover:shadow-[inset_0_0_0_1px_rgb(244_214_158_/_18%),0_0_20px_rgb(201_163_101_/_18%)] motion-safe:hover:-translate-y-px active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5dfb2] motion-reduce:transition-none"
+        type="button"
+        aria-controls="chapters"
+      >
+        <span>Load chapters</span>
+        <span
+          class="transition-transform duration-180 motion-safe:group-hover:translate-x-[3px] motion-reduce:transition-none"
+          aria-hidden="true"
+          >&#8594;</span
+        >
+      </button>
+      <div id="chapters" class="mt-8" aria-live="polite"></div>
     </main>
   </body>
 </html>
