@@ -410,27 +410,52 @@ html.atmosphere-paused #atmosphere * {
 .character-hotspot { position: absolute; pointer-events: auto; }
 .character-hotspot--green { left: 61.5%; top: 46%; width: 11.5%; height: 34%; }
 .character-hotspot--purple { left: 72%; top: 40%; width: 20%; height: 37%; }
-.character-trigger { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; padding: .5rem .75rem; border: 1px solid rgb(255 255 255 / 18%); border-radius: 999px; background: rgb(9 9 11 / 80%); font-size: .7rem; letter-spacing: .04em; cursor: pointer; }
+.character-trigger { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; padding: 0; border: 1px solid rgb(255 255 255 / 18%); border-radius: .35rem; background: rgb(9 9 11 / 80%); font-size: .7rem; letter-spacing: .04em; cursor: pointer; }
 .character-trigger--green { color: #6ee7b7; }
 .character-trigger--purple { color: #c4b5fd; }
 .character-trigger:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
-.character-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 9px currentColor; }
 .character-hotspot .character-trigger { position: absolute; inset: 0; width: 100%; height: 100%; justify-content: center; align-items: end; padding-bottom: .6rem; background: none; border: 0; border-radius: .5rem; }
-.character-hotspot .character-trigger > span:last-child { padding: .4rem .7rem; border: 1px solid currentColor; border-radius: 999px; background: rgb(9 9 11 / 75%); }
-.character-hotspot .character-dot { margin-bottom: .7rem; }
-.character-card { position: absolute; bottom: calc(100% + .6rem); left: 0; z-index: 30; width: 220px; padding: 1rem; border: 1px solid rgb(255 255 255 / 18%); border-radius: .5rem; background: rgb(9 9 11 / 94%); box-shadow: 0 8px 30px rgb(0 0 0 / 35%); visibility: hidden; opacity: 0; pointer-events: none; }
-.character-card--green { border-top-color: #43b581; }
-.character-card--purple { border-top-color: #9563d9; }
-.character-hotspot .character-card { bottom: 65%; left: auto; right: 0; }
+.character-card { position: absolute; bottom: calc(100% + .6rem); left: 0; z-index: 30; width: 240px; padding: 0; overflow: hidden; border: 1px solid rgb(255 255 255 / 18%); border-radius: .5rem; background: rgb(9 9 11 / 94%); box-shadow: 0 8px 30px rgb(0 0 0 / 35%); visibility: hidden; opacity: 0; pointer-events: none; }
+.character-card--green { border-color: #43b581; --select-colour: #43b581; }
+.character-card--purple { border-color: #9563d9; --select-colour: #9563d9; }
+.character-hotspot .character-card { bottom: 65%; left: auto; right: 1rem; }
 .profile-open .character-card, [data-character]:focus-within .character-card { visibility: visible; opacity: 1; pointer-events: auto; }
 @media (hover: hover) and (pointer: fine) {
   [data-character]:hover .character-card { visibility: visible; opacity: 1; pointer-events: auto; }
 }
 /* On small screens place both cards within the page rather than off its edge. */
 @media (max-width: 639px) {
+  [data-character] .character-card { left: 0; right: auto; width: min(240px, calc(100vw - 3rem)); }
   [data-character="purple"] .character-card { left: auto; right: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .story-heading::after { display: none; }
   .journal-preview { transition: none; }
+}
+
+/* Arcade-style UI animates only its frames and portraits, never the wallpaper characters. */
+.character-nameplate { display: inline-flex; align-items: center; gap: .5rem; padding-right: .6rem; border: 1px solid currentColor; border-radius: .3rem; background: rgb(9 9 11 / 90%); overflow: hidden; }
+.character-avatar { width: 40px; height: 40px; object-fit: cover; border-right: 1px solid currentColor; }
+.character-player { font-size: 8px; opacity: .7; letter-spacing: .1em; }
+.character-hotspot .character-nameplate { align-self: end; }
+.select-portrait { position: relative; height: 205px; overflow: hidden; background: #18181b; }
+.select-portrait > img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; transition: transform 250ms ease-out; }
+.select-portrait::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 12%) 3px 4px); opacity: .45; }
+.select-caption { padding: .85rem 1rem 1rem; border-top: 2px solid var(--select-colour); }
+.select-badge { position: absolute; top: .7rem; left: .7rem; z-index: 1; padding: .25rem .4rem; background: #09090b; border: 1px solid var(--select-colour); color: var(--select-colour); font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+.select-corner { position: absolute; z-index: 2; width: 22px; height: 22px; border-color: var(--select-colour); border-style: solid; }
+.select-corner--tl { left: 5px; top: 5px; border-width: 3px 0 0 3px; }
+.select-corner--br { right: 5px; bottom: 5px; border-width: 0 3px 3px 0; }
+.profile-open .select-portrait > img, [data-character]:focus-within .select-portrait > img { transform: scale(1.035); }
+.profile-open .character-card, [data-character]:focus-within .character-card { animation: select-arrive 180ms ease-out; }
+@media (hover: hover) and (pointer: fine) {
+  [data-character]:hover .select-portrait > img { transform: scale(1.035); }
+  [data-character]:hover .character-card { animation: select-arrive 180ms ease-out; }
+}
+@keyframes select-arrive { from { transform: translateY(6px); } to { transform: translateY(0); } }
+/* On phones the taller portrait card opens below its chip, avoiding clipped horns at the page top. */
+@media (max-width: 1023px) { .character-card { bottom: auto; top: calc(100% + .6rem); } }
+@media (prefers-reduced-motion: reduce) {
+  .select-portrait > img { transition: none; transform: none !important; }
+  .profile-open .character-card, [data-character]:focus-within .character-card, [data-character]:hover .character-card { animation: none; }
 }

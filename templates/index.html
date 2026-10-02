@@ -353,25 +353,41 @@
             >&#8594;</span
           >
         </button>
-<div class="mt-5 flex gap-3 lg:hidden"><div class="relative" data-character="green">
+<div class="mt-5 flex flex-wrap gap-3 lg:hidden"><div class="relative" data-character="green">
         <button type="button" aria-expanded="false" aria-controls="profile-green-mobile" class="character-trigger character-trigger--green">
-          <span class="character-dot" aria-hidden="true"></span><span>Thya Pyrewatcher</span>
+          <!-- Small avatar and full portrait share one lightweight WebP asset. -->
+          <span class="character-nameplate"><img class="character-avatar" src="{{ url_for('static', filename='images/thya-portrait.webp') }}" width="40" height="40" alt="" loading="lazy" /><span>Thya</span><span class="character-player" aria-hidden="true">P2</span></span>
         </button>
         <div id="profile-green-mobile" class="character-card character-card--green">
-          <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Our companions</p>
-          <h2 class="mt-2 font-serif text-xl">Thya Pyrewatcher</h2>
-          <p class="mt-1 text-xs leading-5 text-stone-300">An emerald spark beside your violet flame.</p>
-          <p class="mt-3 border-t border-white/10 pt-3 text-[11px] text-stone-400">Two Charr. One shared journey.</p>
+          <div class="select-portrait">
+            <img src="{{ url_for('static', filename='images/thya-portrait.webp') }}" width="256" height="256" alt="Cartoon portrait of Thya Pyrewatcher" loading="lazy" />
+            <span class="select-badge">P2 · READY</span>
+            <span class="select-corner select-corner--tl" aria-hidden="true"></span>
+            <span class="select-corner select-corner--br" aria-hidden="true"></span>
+          </div>
+          <div class="select-caption">
+            <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Character select</p>
+            <h2 class="mt-1 font-serif text-xl">Thya Pyrewatcher</h2>
+            <p class="mt-2 text-xs text-stone-300">Two Charr. One shared journey.</p>
+          </div>
         </div>
       </div><div class="relative" data-character="purple">
         <button type="button" aria-expanded="false" aria-controls="profile-purple-mobile" class="character-trigger character-trigger--purple">
-          <span class="character-dot" aria-hidden="true"></span><span>Kihto Pyrewalker</span>
+          <!-- Small avatar and full portrait share one lightweight WebP asset. -->
+          <span class="character-nameplate"><img class="character-avatar" src="{{ url_for('static', filename='images/kihto-portrait.webp') }}" width="40" height="40" alt="" loading="lazy" /><span>Kihto</span><span class="character-player" aria-hidden="true">P1</span></span>
         </button>
         <div id="profile-purple-mobile" class="character-card character-card--purple">
-          <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Our companions</p>
-          <h2 class="mt-2 font-serif text-xl">Kihto Pyrewalker</h2>
-          <p class="mt-1 text-xs leading-5 text-stone-300">A violet flame beside her emerald spark.</p>
-          <p class="mt-3 border-t border-white/10 pt-3 text-[11px] text-stone-400">Two Charr. One shared journey.</p>
+          <div class="select-portrait">
+            <img src="{{ url_for('static', filename='images/kihto-portrait.webp') }}" width="256" height="256" alt="Cartoon portrait of Kihto Pyrewalker" loading="lazy" />
+            <span class="select-badge">P1 · READY</span>
+            <span class="select-corner select-corner--tl" aria-hidden="true"></span>
+            <span class="select-corner select-corner--br" aria-hidden="true"></span>
+          </div>
+          <div class="select-caption">
+            <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Character select</p>
+            <h2 class="mt-1 font-serif text-xl">Kihto Pyrewalker</h2>
+            <p class="mt-2 text-xs text-stone-300">Two Charr. One shared journey.</p>
+          </div>
         </div>
       </div></div>
         <!-- Compact previews open one editor; changes are saved only in this browser. -->
@@ -411,23 +427,39 @@
         <div class="absolute -inset-8"><div class="scene-stage">
 <div class="character-hotspot character-hotspot--green" data-character="green">
         <button type="button" aria-expanded="false" aria-controls="profile-green-scene" class="character-trigger character-trigger--green">
-          <span class="character-dot" aria-hidden="true"></span><span>Thya Pyrewatcher</span>
+          <!-- Small avatar and full portrait share one lightweight WebP asset. -->
+          <span class="character-nameplate"><img class="character-avatar" src="{{ url_for('static', filename='images/thya-portrait.webp') }}" width="40" height="40" alt="" loading="lazy" /><span>Thya</span><span class="character-player" aria-hidden="true">P2</span></span>
         </button>
         <div id="profile-green-scene" class="character-card character-card--green">
-          <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Our companions</p>
-          <h2 class="mt-2 font-serif text-xl">Thya Pyrewatcher</h2>
-          <p class="mt-1 text-xs leading-5 text-stone-300">An emerald spark beside your violet flame.</p>
-          <p class="mt-3 border-t border-white/10 pt-3 text-[11px] text-stone-400">Two Charr. One shared journey.</p>
+          <div class="select-portrait">
+            <img src="{{ url_for('static', filename='images/thya-portrait.webp') }}" width="256" height="256" alt="Cartoon portrait of Thya Pyrewatcher" loading="lazy" />
+            <span class="select-badge">P2 · READY</span>
+            <span class="select-corner select-corner--tl" aria-hidden="true"></span>
+            <span class="select-corner select-corner--br" aria-hidden="true"></span>
+          </div>
+          <div class="select-caption">
+            <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Character select</p>
+            <h2 class="mt-1 font-serif text-xl">Thya Pyrewatcher</h2>
+            <p class="mt-2 text-xs text-stone-300">Two Charr. One shared journey.</p>
+          </div>
         </div>
       </div><div class="character-hotspot character-hotspot--purple" data-character="purple">
         <button type="button" aria-expanded="false" aria-controls="profile-purple-scene" class="character-trigger character-trigger--purple">
-          <span class="character-dot" aria-hidden="true"></span><span>Kihto Pyrewalker</span>
+          <!-- Small avatar and full portrait share one lightweight WebP asset. -->
+          <span class="character-nameplate"><img class="character-avatar" src="{{ url_for('static', filename='images/kihto-portrait.webp') }}" width="40" height="40" alt="" loading="lazy" /><span>Kihto</span><span class="character-player" aria-hidden="true">P1</span></span>
         </button>
         <div id="profile-purple-scene" class="character-card character-card--purple">
-          <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Our companions</p>
-          <h2 class="mt-2 font-serif text-xl">Kihto Pyrewalker</h2>
-          <p class="mt-1 text-xs leading-5 text-stone-300">A violet flame beside her emerald spark.</p>
-          <p class="mt-3 border-t border-white/10 pt-3 text-[11px] text-stone-400">Two Charr. One shared journey.</p>
+          <div class="select-portrait">
+            <img src="{{ url_for('static', filename='images/kihto-portrait.webp') }}" width="256" height="256" alt="Cartoon portrait of Kihto Pyrewalker" loading="lazy" />
+            <span class="select-badge">P1 · READY</span>
+            <span class="select-corner select-corner--tl" aria-hidden="true"></span>
+            <span class="select-corner select-corner--br" aria-hidden="true"></span>
+          </div>
+          <div class="select-caption">
+            <p class="text-[9px] uppercase tracking-[0.25em] text-stone-400">Character select</p>
+            <h2 class="mt-1 font-serif text-xl">Kihto Pyrewalker</h2>
+            <p class="mt-2 text-xs text-stone-300">Two Charr. One shared journey.</p>
+          </div>
         </div>
       </div>
         </div></div>
