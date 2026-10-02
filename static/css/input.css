@@ -1,6 +1,9 @@
+/* Edit this source and HTML utilities. Tailwind generates output.css; do not edit the generated file.
+   npm run build:css rebuilds styles; npm run css watches source changes. */
 @import 'tailwindcss';
 
 /* Tailwind motion tokens for decorative atmosphere. */
+/* Animation tokens expose motion-safe:animate-* utilities. Keyframes define visual states. */
 @theme {
   --animate-wallpaper-drift: wallpaper-drift 32s ease-in-out infinite alternate;
   --animate-mist-drift: mist-drift 28s ease-in-out infinite alternate;
@@ -19,7 +22,9 @@
   }
 }
 
+/* Custom components handle image geometry and effects that need more than standard utilities. */
 @layer components {
+  /* Preserve source aspect ratio; 32px overscan on each edge prevents gaps during parallax. */
   .scene-stage {
     position: absolute;
     left: 50%;
@@ -28,6 +33,7 @@
     aspect-ratio: 1672 / 941;
     transform: translate(-50%, -50%);
   }
+  /* atmosphere.js supplies these custom properties; only distant scenery gets the transform. */
   .landscape-depth {
     transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 0);
   }
@@ -37,6 +43,7 @@
   .island-hover--right { animation: island-hover-right 19s ease-in-out -9s infinite; }
   /* Two islands share one transparent source; each view clips out the other island. */
   .island-art { position: absolute; object-fit: fill; }
+  /* Placement compensates for generated asset scale; inset clips away the other island. */
   .island-art--left {
     left: 7.2%; top: -1%; width: 70%; height: 70%;
     clip-path: inset(0 45% 0 0);
@@ -47,18 +54,22 @@
     clip-path: inset(0 0 0 55%);
     opacity: .9;
   }
+  /* Radial gradients look like mist when combined with blur and drifting animation in the HTML. */
   .mist {
     background: radial-gradient(ellipse at 35% 80%, #e2e8f0 0%, transparent 55%), radial-gradient(ellipse at 75% 90%, #d4b784 0%, transparent 45%);
   }
+  /* A radial light follows pointer coordinates from atmosphere.js. */
   .pointer-glow {
     background: radial-gradient(500px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgb(255 216 151 / 12%), transparent 75%);
   }
+  /* Conic gradient wedges form rays; screen blending lightens rather than covers the scene. */
   .sunlight {
     background: conic-gradient(from 160deg at 48% 5%, transparent 0deg, rgb(255 231 177 / 12%) 12deg, transparent 20deg, rgb(255 240 209 / 8%) 30deg, transparent 43deg);
     mix-blend-mode: screen;
     animation: sunlight-shift 16s ease-in-out infinite alternate;
   }
 }
+/* Different amplitudes, durations and phase delays prevent lockstep island motion. */
 @keyframes island-hover-left {
   0%, 100% { transform: translateY(5px); }
   50% { transform: translateY(-5px); }
@@ -71,16 +82,21 @@
   from { opacity: .3; transform: rotate(-3deg) scale(1.05); }
   to { opacity: .7; transform: rotate(3deg) scale(1.08); }
 }
+/* Asset failures use the untouched wallpaper, disable its movement and hide duplicated island layers. */
 .scene-fallback .landscape-depth { transform: none; }
 .scene-fallback #landscape { animation: none; }
 .scene-fallback .island-hover { display: none; }
+/* Honour the operating-system motion preference while keeping the page content visible. */
 @media (prefers-reduced-motion: reduce) {
   .mist, .pointer-glow, .sunlight, #ember-field { display: none; }
+  /* atmosphere.js supplies these custom properties; only distant scenery gets the transform. */
   .landscape-depth { transform: none; }
   .island-hover { animation: none; transform: none; }
 }
+/* atmosphere.js adds this when hidden/unfocused; pause CSS motion alongside canvas drawing. */
 html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
 /* Once-per-session dragon-and-embers cinematic. Default state is no overlay. */
+/* Full-screen intro; JavaScript toggles pending, playing and revealing classes on <html>. */
 .story-intro {
   position: fixed;
   inset: 0;
@@ -92,16 +108,19 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   opacity: 1;
   transition: opacity 1.05s ease-in-out;
 }
+/* No-JavaScript default is hidden; pending prepares the overlay until DOM setup completes. */
 .story-intro[hidden] { display: none; }
 .intro-pending .story-intro[hidden] { display: grid; }
 .intro-pending { overflow: hidden; }
 .intro-pending body > header,
 .intro-pending body > main { opacity: 0; }
 .intro-pending body > main section { animation-play-state: paused; }
+/* Crossfade content in while the overlay fades out; JavaScript removes the overlay after the transition. */
 .intro-revealing body > header,
 .intro-revealing body > main { opacity: 1; transition: opacity 800ms ease; }
 .intro-revealing body > main section { animation-play-state: running; }
 .intro-revealing .story-intro { opacity: 0; pointer-events: none; }
+/* Subdued, blurred artwork behind the logo introduces the destination without competing with it. */
 .intro-art { position: absolute; inset: -5%; opacity: .12; filter: blur(3px) saturate(.6); }
 .intro-halo {
   position: absolute;
@@ -113,12 +132,15 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
 .intro-logo { filter: drop-shadow(0 0 16px rgb(240 93 29 / 40%)); }
 /* Glow is applied outside the masked image; no rectangular clip bounds. */
 .intro-logo { overflow: visible; }
+/* Normalised dash offset 1 to 0 exposes the curved white SVG brush mask in index.html. */
 .logo-brush-stroke { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
 .intro-playing .logo-brush-stroke { animation: logo-brush-draw 2s linear 100ms both; }
 .intro-playing .intro-halo { animation: intro-halo 3.5s ease-out both; }
+/* Stagger text after the logo; trailing timing values are animation delays. */
 .intro-playing .intro-kicker { animation: intro-text 650ms ease-out 450ms both; }
 .intro-playing .intro-wordmark { animation: intro-text 900ms ease-out 750ms both; }
 .intro-playing .intro-caption { animation: intro-text 700ms ease-out 1100ms both; }
+/* intro.js supplies each span position/delay/travel; CSS animates its rise and opacity. */
 .intro-ember {
   position: absolute;
   left: var(--left);
@@ -130,6 +152,7 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   box-shadow: 0 0 12px 3px rgb(255 163 65 / 40%);
   animation: intro-ember 4s linear var(--delay) infinite;
 }
+/* This single stroke reveals all details, with no late fill or rectangular wipe. */
 @keyframes logo-brush-draw {
   from { stroke-dashoffset: 1; opacity: 0; }
   3% { opacity: 1; }
@@ -149,6 +172,7 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   20%, 70% { opacity: .7; }
   100% { opacity: 0; transform: translate3d(var(--travel), -100vh, 0); }
 }
+/* Honour the operating-system motion preference while keeping the page content visible. */
 @media (prefers-reduced-motion: reduce) {
   .story-intro, .intro-pending .story-intro[hidden] { display: none; }
   .intro-pending { overflow: auto; }

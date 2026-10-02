@@ -1,5 +1,7 @@
 // Ambient soundtrack: begins silently and fades in when the opening cinematic ends.
+// Run once in a private scope so music variables do not become globals.
 (() => {
+  // Find the HTML audio element and its controls by ID.
   const audio = document.getElementById('background-music');
   const controls = document.getElementById('music-controls');
   const toggle = document.getElementById('music-toggle');
@@ -9,22 +11,28 @@
   const waves = document.getElementById('music-waves');
   const off = document.getElementById('music-off');
   if (!audio || !controls || !toggle || !slider) return;
+  // Desired volume uses 0–1; actual audio.volume changes during fading. pending prevents duplicate play requests.
   const key = 'gw2-background-music';
   let volume = .25, muted = false, playing = false, pending = false, failed = false;
+  // Wait for the intro unless this visit skips it.
   let ready = !document.documentElement.classList.contains('intro-pending');
   let fadeFrame = 0;
+  // localStorage remembers mute/volume across visits. Validate saved levels and tolerate unavailable storage.
   try {
     const saved = JSON.parse(localStorage.getItem(key));
     if (saved && Number.isFinite(saved.volume)) volume = Math.max(0, Math.min(1, saved.volume));
     if (saved && typeof saved.muted === 'boolean') muted = saved.muted;
   } catch { /* Preferences are optional when storage is unavailable. */ }
+  // Begin silently even if a gesture authorises playback during the intro.
   audio.volume = 0;
   audio.muted = muted;
   controls.hidden = false;
 
+  // Store chosen settings, not an intermediate volume part-way through a fade.
   function save() {
     try { localStorage.setItem(key, JSON.stringify({ volume, muted })); } catch {}
   }
+  // Synchronise icon, percentage, tooltip and screen-reader label; aria-pressed reports enabled playback.
   function update() {
     const audible = playing && !muted && volume > 0;
     waves.style.display = audible ? '' : 'none';
@@ -37,10 +45,13 @@
     slider.value = String(Math.round(volume * 100));
     output.textContent = `${Math.round(volume * 100)}%`;
   }
+  // Fade to target over milliseconds (2.5 seconds by default); cancel an older fade before starting.
   function fadeTo(target, duration = 2500) {
     cancelAnimationFrame(fadeFrame);
+    // Record starting level/time; performance.now and animation frames provide a precise clock.
     const from = audio.volume, start = performance.now();
     function step(now) {
+      // Clamp elapsed progress to 0–1 so delayed frames cannot overshoot the target.
       const progress = Math.min(1, Math.max(0, (now - start) / duration));
       // Smooth start and finish, without an abrupt jump in volume.
       audio.volume = from + (target - from) * (progress * progress * (3 - 2 * progress));
@@ -49,6 +60,7 @@
     }
     fadeFrame = requestAnimationFrame(step);
   }
+  // play returns a Promise: browsers may wait for data or reject playback without a gesture.
   function start() {
     if (pending || failed || muted || volume === 0) return;
     if (playing) {
@@ -63,17 +75,20 @@
       if (ready && !muted) fadeTo(volume);
       status.textContent = ready && !muted ? 'Background music playing' : '';
       update();
+    // Autoplay rejection is recoverable: leave the speaker available for a gesture retry.
     }).catch(() => {
       pending = false;
       status.textContent = ready ? 'Select the speaker to play background music' : '';
       update();
     });
   }
+  // Clicks and activation keys can authorise sound; ignore controls that have their own handlers below.
   function onGesture(event) {
     if (event.type === 'keydown' && !['Enter', ' ', 'Escape'].includes(event.key)) return;
     if (event.target && controls.contains(event.target)) return;
     if (!playing) start();
   }
+  // Click to mute immediately or unmute from zero with a gentle fade.
   toggle.addEventListener('click', () => {
     if (playing && !muted && volume > 0) {
       muted = true;
@@ -88,6 +103,7 @@
     }
     save(); update();
   });
+  // Convert the slider string from 0–100 to audio volume 0–1; zero mutes; 150ms fades smooth dragging.
   slider.addEventListener('input', () => {
     volume = Number(slider.value) / 100;
     muted = volume === 0;
@@ -97,11 +113,13 @@
     else start();
     save(); update();
   });
+  // Browser-initiated pauses also stop fading and update the icon.
   audio.addEventListener('pause', () => {
     playing = false;
     cancelAnimationFrame(fadeFrame); fadeFrame = 0;
     update();
   });
+  // Missing/unreadable audio disables controls and announces the problem to screen readers.
   audio.addEventListener('error', () => {
     failed = true; playing = false;
     cancelAnimationFrame(fadeFrame);
@@ -109,12 +127,15 @@
     status.textContent = 'Background music could not be loaded';
     update();
   });
+  // intro.js dispatches this custom event once the homepage appears; begin the music fade here.
   document.addEventListener('story-intro-finished', () => {
     ready = true;
     start();
   }, { once: true });
+  // These gesture listeners retry playback when automatic playback was blocked.
   document.addEventListener('pointerdown', onGesture, { passive: true });
   document.addEventListener('keydown', onGesture);
+  // Pause on navigation; pageshow handles returning through the back/forward cache.
   window.addEventListener('pagehide', () => {
     cancelAnimationFrame(fadeFrame);
     audio.pause();
@@ -123,5 +144,6 @@
     if (event.persisted && ready) start();
   });
   update();
+  // When no intro runs, try playback immediately; gesture/button fallbacks still apply.
   if (ready) start();
 })();
