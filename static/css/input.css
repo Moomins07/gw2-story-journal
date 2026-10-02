@@ -1,13 +1,13 @@
 @import 'tailwindcss';
 
-/* Custom motion tokens remain in the Tailwind build alongside utility styling. */
+/* Tailwind motion tokens for decorative atmosphere. */
 @theme {
   --animate-wallpaper-drift: wallpaper-drift 32s ease-in-out infinite alternate;
   --animate-mist-drift: mist-drift 28s ease-in-out infinite alternate;
   --animate-hero-reveal: hero-reveal 900ms ease-out both;
   @keyframes wallpaper-drift {
     from { transform: scale(1.015) translate3d(-0.25%, 0, 0); }
-    to { transform: scale(1.055) translate3d(0.25%, -0.5%, 0); }
+    to { transform: scale(1.045) translate3d(0.25%, -0.5%, 0); }
   }
   @keyframes mist-drift {
     from { transform: translate3d(-6%, 0, 0); }
@@ -20,8 +20,32 @@
 }
 
 @layer components {
-  .wallpaper-depth {
+  .scene-stage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, calc((100svh + 64px) * 1.776833));
+    aspect-ratio: 1672 / 941;
+    transform: translate(-50%, -50%);
+  }
+  .landscape-depth {
     transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 0);
+  }
+  /* The foreground shares the same cover coordinates but never receives a transform. */
+  .foreground-art { object-fit: fill; }
+  .island-hover--left { animation: island-hover-left 13s ease-in-out -4s infinite; }
+  .island-hover--right { animation: island-hover-right 19s ease-in-out -9s infinite; }
+  /* Two islands share one transparent source; each view clips out the other island. */
+  .island-art { position: absolute; object-fit: fill; }
+  .island-art--left {
+    left: 7.2%; top: -1%; width: 70%; height: 70%;
+    clip-path: inset(0 45% 0 0);
+    opacity: .85;
+  }
+  .island-art--right {
+    left: 25.2%; top: -2.1%; width: 60%; height: 60%;
+    clip-path: inset(0 0 0 55%);
+    opacity: .9;
   }
   .mist {
     background: radial-gradient(ellipse at 35% 80%, #e2e8f0 0%, transparent 55%), radial-gradient(ellipse at 75% 90%, #d4b784 0%, transparent 45%);
@@ -29,30 +53,30 @@
   .pointer-glow {
     background: radial-gradient(500px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgb(255 216 151 / 12%), transparent 75%);
   }
-  .ember {
-    position: absolute;
-    bottom: -24px;
-    left: var(--ember-left);
-    width: var(--ember-size);
-    height: var(--ember-size);
-    border-radius: 50%;
-    background: #ffd497;
-    box-shadow: 0 0 9px 2px rgb(255 167 76 / 45%);
-    opacity: 0;
-    animation: ember-rise var(--ember-duration) linear var(--ember-delay) infinite;
+  .sunlight {
+    background: conic-gradient(from 160deg at 48% 5%, transparent 0deg, rgb(255 231 177 / 12%) 12deg, transparent 20deg, rgb(255 240 209 / 8%) 30deg, transparent 43deg);
+    mix-blend-mode: screen;
+    animation: sunlight-shift 16s ease-in-out infinite alternate;
   }
 }
-
-@keyframes ember-rise {
-  0% { opacity: 0; transform: translate3d(0, 0, 0); }
-  15% { opacity: .65; }
-  75% { opacity: .4; }
-  100% { opacity: 0; transform: translate3d(var(--ember-drift), -110vh, 0); }
+@keyframes island-hover-left {
+  0%, 100% { transform: translateY(5px); }
+  50% { transform: translateY(-5px); }
 }
-
+@keyframes island-hover-right {
+  0%, 100% { transform: translateY(-7px); }
+  50% { transform: translateY(7px); }
+}
+@keyframes sunlight-shift {
+  from { opacity: .3; transform: rotate(-3deg) scale(1.05); }
+  to { opacity: .7; transform: rotate(3deg) scale(1.08); }
+}
+.scene-fallback .landscape-depth { transform: none; }
+.scene-fallback #landscape { animation: none; }
+.scene-fallback .island-hover { display: none; }
 @media (prefers-reduced-motion: reduce) {
-  .ember, .mist, .pointer-glow { display: none; }
-  .wallpaper-depth { transform: none; }
+  .mist, .pointer-glow, .sunlight, #ember-field { display: none; }
+  .landscape-depth { transform: none; }
+  .island-hover { animation: none; transform: none; }
 }
-
 html.atmosphere-paused #atmosphere * { animation-play-state: paused; }

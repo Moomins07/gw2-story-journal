@@ -10,17 +10,34 @@
   <body class="isolate min-h-screen bg-zinc-950 text-stone-100">
     <!-- All atmosphere layers are decorative and leave controls clickable. -->
     <div id="atmosphere" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div class="wallpaper-depth absolute -inset-8">
-        <img src="{{ url_for('static', filename='images/wallpaper.png') }}" alt=""
-          class="h-full w-full object-cover object-[65%_center] motion-safe:animate-wallpaper-drift md:object-center"
-          fetchpriority="high" />
+      <div class="scene-frame absolute -inset-8">
+        <div class="scene-stage">
+          <!-- Only distant scenery responds to parallax. -->
+          <div class="landscape-depth absolute inset-0">
+            <img id="landscape" src="{{ url_for('static', filename='images/wallpaper-distance.png') }}"
+              data-fallback="{{ url_for('static', filename='images/wallpaper.png') }}" alt=""
+              class="absolute inset-0 h-full w-full motion-safe:animate-wallpaper-drift" fetchpriority="high" />
+            <div class="island-hover island-hover--left absolute inset-0">
+              <img src="{{ url_for('static', filename='images/floating-islands.png') }}" alt=""
+                class="island-art island-art--left" />
+            </div>
+            <div class="island-hover island-hover--right absolute inset-0">
+              <img src="{{ url_for('static', filename='images/floating-islands.png') }}" alt=""
+                class="island-art island-art--right" />
+            </div>
+          </div>
+          <!-- Characters, ground and nearby foliage form one stationary foreground. -->
+          <img id="charr-foreground" src="{{ url_for('static', filename='images/charr-ledge-foreground.png') }}"
+            alt="" class="foreground-art absolute inset-0 h-full w-full" />
+          <div class="sunlight absolute inset-0"></div>
+        </div>
       </div>
       <div class="absolute inset-0 bg-linear-to-r from-zinc-950/85 via-zinc-950/40 to-zinc-950/5"></div>
       <div class="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-transparent to-zinc-950/30"></div>
       <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(9,9,11,0.5)_100%)]"></div>
       <div class="mist absolute -inset-x-1/2 bottom-0 h-1/2 opacity-20 blur-3xl motion-safe:animate-mist-drift"></div>
       <div class="pointer-glow absolute inset-0 opacity-0 transition-opacity duration-700"></div>
-      <div class="embers absolute inset-0 overflow-hidden"></div>
+      <canvas id="ember-field" class="absolute inset-0 h-full w-full"></canvas>
     </div>
 
     <header class="mx-auto flex max-w-7xl items-center justify-between border-b border-amber-100/15 px-6 py-6 md:px-12">
