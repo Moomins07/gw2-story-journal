@@ -151,6 +151,18 @@
               />
             </div>
           </div>
+          <!-- A displacement map bends only the tails and loose cloth. Neutral grey
+               leaves heads, armour, feet and the ground at their original coordinates.
+               The map uses the same 1672 x 941 coordinates as the foreground PNG. -->
+          <svg class="absolute h-0 w-0" aria-hidden="true" focusable="false">
+            <defs>
+              <filter id="cloth-wind" primitiveUnits="objectBoundingBox" x="-1%" y="-1%" width="102%" height="102%" color-interpolation-filters="sRGB">
+                <feImage href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221672%22%20height%3D%22941%22%20viewBox%3D%220%200%201672%20941%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22sway%22%3E%3Cstop%20stop-color%3D%22rgb%2875%25%2C85%25%2C50%25%29%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%2850%25%2C50%25%2C50%25%29%22%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%22counter%22%3E%3Cstop%20stop-color%3D%22rgb%2830%25%2C20%25%2C50%25%29%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%2850%25%2C50%25%2C50%25%29%22%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Cpath%20fill%3D%22rgb%2850%25%2C50%25%2C50%25%29%22%20d%3D%22M0%200H1672V941H0Z%22%2F%3E%3Cellipse%20cx%3D%221197%22%20cy%3D%22655%22%20rx%3D%2258%22%20ry%3D%2230%22%20fill%3D%22url%28%23sway%29%22%2F%3E%3Cellipse%20cx%3D%221488%22%20cy%3D%22568%22%20rx%3D%2262%22%20ry%3D%2225%22%20fill%3D%22url%28%23counter%29%22%2F%3E%3Cellipse%20cx%3D%221402%22%20cy%3D%22620%22%20rx%3D%2299%22%20ry%3D%2248%22%20fill%3D%22url%28%23sway%29%22%2F%3E%3Cellipse%20cx%3D%221128%22%20cy%3D%22650%22%20rx%3D%2224%22%20ry%3D%2235%22%20fill%3D%22url%28%23counter%29%22%2F%3E%3C%2Fsvg%3E" x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="wind-map" />
+                <!-- atmosphere.js varies scale slowly; zero gives the untouched image. -->
+                <feDisplacementMap id="cloth-wind-strength" in="SourceGraphic" in2="wind-map" scale="0" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+            </defs>
+          </svg>
           <!-- Characters, ground and nearby foliage form one stationary foreground. -->
           <img
             id="charr-foreground"

@@ -301,6 +301,9 @@
   .table {
     display: table;
   }
+  .h-0 {
+    height: 0px;
+  }
   .h-1 {
     height: var(--spacing);
   }
@@ -339,6 +342,9 @@
   }
   .min-h-screen {
     min-height: 100vh;
+  }
+  .w-0 {
+    width: 0px;
   }
   .w-1 {
     width: var(--spacing);
@@ -1286,6 +1292,17 @@ html.atmosphere-paused #atmosphere * {
 }
 .intro-pending #music-controls {
   visibility: hidden;
+}
+.foreground-art {
+  filter: url(#cloth-wind);
+}
+@media (prefers-reduced-motion: reduce) {
+  .foreground-art {
+    filter: none;
+  }
+}
+.scene-fallback .foreground-art, html.atmosphere-paused .foreground-art {
+  filter: none;
 }
 @property --tw-rotate-x {
   syntax: "*";

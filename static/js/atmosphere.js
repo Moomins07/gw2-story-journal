@@ -10,6 +10,9 @@
   const landscape = document.getElementById('landscape');
   const foreground = document.getElementById('charr-foreground');
   const islands = scene.querySelectorAll('.island-art');
+  // SVG displacement changes only the painted tail/cloth zones, leaving the ledge steady.
+  const clothWind = document.getElementById('cloth-wind-strength');
+  let windTime = 0;
   // A single transparent canvas holds all embers; its context supplies 2D drawing commands.
   const canvas = document.getElementById('ember-field');
   const context = canvas.getContext('2d');
@@ -59,6 +62,7 @@
   function stop() {
     cancelAnimationFrame(frame); frame = 0; previous = 0;
     clearPointer(); x = y = 0;
+    if (clothWind) clothWind.setAttribute('scale', '0');
     for (const property of ['--depth-x', '--depth-y']) {
       scene.style.setProperty(property, '0px');
     }
@@ -70,6 +74,16 @@
     // Move by elapsed seconds, capped at 0.04 so delayed frames cannot throw particles across the screen.
     const dt = previous ? Math.min((now - previous) / 1000, .04) : 0;
     previous = now;
+    // Accumulate active time so resuming the tab continues the breeze without a jump.
+    // Two slow waves make a gentle, irregular breeze. Map weights limit movement
+    // to roughly 1–3 pixels, with opposite directions for the two tails.
+    windTime += dt;
+    if (clothWind) {
+      const breeze = Math.sin(windTime * 1.15) * 7 + Math.sin(windTime * .53) * 2;
+      // The filter uses objectBoundingBox units: 1 means the entire image width.
+      // Convert source-pixel strength to a fraction, otherwise it tears huge holes.
+      clothWind.setAttribute('scale', (breeze / 1672).toFixed(6));
+    }
     // Exponential smoothing makes parallax gentle and consistent across different frame rates.
     const smoothing = 1 - Math.exp(-5 * dt);
     x += (targetX - x) * smoothing; y += (targetY - y) * smoothing;
