@@ -13,7 +13,7 @@
   let frame = 0, previous = 0, width = innerWidth, height = innerHeight;
   let px = width / 2, py = height / 2, pointerActive = false;
   let x = 0, y = 0, targetX = 0, targetY = 0;
-  let particles = [], sparks = [];
+  let particles = [];
 
   // If either generated layer fails, use the unmodified wallpaper without duplicates.
   function fallback() {
@@ -53,7 +53,6 @@
       scene.style.setProperty(property, '0px');
     }
     if (context) context.clearRect(0, 0, width, height);
-    sparks = [];
   }
   function render(now) {
     if (motion.matches || document.hidden) { stop(); return; }
@@ -83,13 +82,6 @@
         context.shadowBlur = 8; context.shadowColor = '#ffad5b';
         context.fillStyle = `rgba(255,207,135,${alpha})`; context.fill();
       }
-      sparks = sparks.filter(s => s.life > 0);
-      for (const s of sparks) {
-        s.life -= dt; s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 30 * dt;
-        context.beginPath(); context.arc(s.x, s.y, 1.4, 0, Math.PI * 2);
-        context.fillStyle = `rgba(255,221,161,${Math.max(0, s.life / s.duration)})`;
-        context.fill();
-      }
       context.shadowBlur = 0;
     }
     frame = requestAnimationFrame(render);
@@ -111,18 +103,6 @@
     glow.style.opacity = '1';
     start();
   }, { passive: true });
-  window.addEventListener('click', event => {
-    if (motion.matches || document.hidden || !context ||
-        event.target.closest('a, button, input, textarea, select, [role="button"]')) return;
-    if (sparks.length > 150) return;
-    for (let i = 0; i < 22; i++) {
-      const angle = Math.random() * Math.PI * 2, speed = 25 + Math.random() * 85;
-      const duration = .8 + Math.random() * .7;
-      sparks.push({ x: event.clientX, y: event.clientY, vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 30, life: duration, duration });
-    }
-    start();
-  });
   document.documentElement.addEventListener('pointerleave', clearPointer);
   window.addEventListener('blur', () => {
     document.documentElement.classList.add('atmosphere-paused'); stop();

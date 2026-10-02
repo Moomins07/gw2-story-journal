@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Our Story — GW2 Journal</title>
+    <link rel="preload" as="image" href="{{ url_for('static', filename='images/gw2-logo.png') }}" />
     <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
     <script defer src="{{ url_for('static', filename='js/atmosphere.js') }}"></script>
@@ -17,12 +18,21 @@
       <div class="intro-embers absolute inset-0 overflow-hidden" aria-hidden="true"></div>
       <div class="intro-halo" aria-hidden="true"></div>
       <div class="intro-title relative px-6 text-center">
-        <svg class="intro-crest mx-auto h-32 w-32 text-amber-200 sm:h-44 sm:w-44" viewBox="0 0 200 200" fill="none" aria-hidden="true">
-          <!-- Original dragon-inspired heraldry, drawn as glowing gold strokes. -->
-          <circle class="intro-ring" cx="100" cy="100" r="85" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="2 9" />
-          <path class="crest-stroke" pathLength="1" d="M100 12 109 27 100 42 91 27Z M188 100 173 109 158 100 173 91Z M100 188 109 173 100 158 91 173Z M12 100 27 109 42 100 27 91Z" stroke="currentColor" stroke-width="1" />
-          <path class="crest-stroke" pathLength="1" d="M144 57C124 31 81 39 63 65C43 94 52 125 78 141C99 154 128 147 141 128C152 111 150 91 139 81L129 73 145 68 132 58 116 64 109 53 108 73 96 85 111 88 114 101 123 93C132 108 124 126 108 130C86 136 67 120 66 101C66 79 82 65 99 63" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-          <path class="crest-stroke crest-stroke--detail" pathLength="1" d="M66 74 51 70 58 85 45 91 58 101 49 115 66 119 M139 124 157 124 143 138 148 150 130 147 M119 78 124 76 M76 132 72 149 87 143" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <svg class="intro-logo mx-auto h-40 w-40 overflow-visible sm:h-52 sm:w-52"
+          viewBox="0 0 1000 1032" role="img" aria-labelledby="intro-logo-title">
+          <title id="intro-logo-title">Guild Wars 2</title>
+          <defs>
+            <!-- A curved brush mask follows the dragon-shaped 2 rather than wiping a rectangle. -->
+            <mask id="intro-logo-brush" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse"
+              x="0" y="0" width="1000" height="1032" style="mask-type: alpha">
+              <path class="logo-brush-stroke" pathLength="1"
+                d="M95 335 C95 235 200 120 385 115 C585 72 805 165 730 345 C690 455 530 505 410 595 C235 725 120 830 75 945 C360 1000 720 910 930 880"
+                fill="none" stroke="white" stroke-width="660" stroke-linecap="round" stroke-linejoin="round" />
+            </mask>
+          </defs>
+          <image href="{{ url_for('static', filename='images/gw2-logo.png') }}"
+            width="1000" height="1032" preserveAspectRatio="xMidYMid meet"
+            mask="url(#intro-logo-brush)" />
         </svg>
         <p class="intro-kicker mt-7 text-[10px] uppercase tracking-[0.45em] text-amber-200/80">Two souls. One journey.</p>
         <p class="intro-wordmark mt-4 font-serif text-5xl tracking-[0.12em] text-stone-100 sm:text-7xl">OUR STORY</p>

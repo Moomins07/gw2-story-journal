@@ -89,8 +89,8 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   place-items: center;
   overflow: hidden;
   background: #09090b;
-  clip-path: circle(150% at 50% 50%);
-  transition: clip-path 1.05s cubic-bezier(.65, 0, .25, 1);
+  opacity: 1;
+  transition: opacity 1.05s ease-in-out;
 }
 .story-intro[hidden] { display: none; }
 .intro-pending .story-intro[hidden] { display: grid; }
@@ -101,7 +101,7 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
 .intro-revealing body > header,
 .intro-revealing body > main { opacity: 1; transition: opacity 800ms ease; }
 .intro-revealing body > main section { animation-play-state: running; }
-.intro-revealing .story-intro { clip-path: circle(0% at 50% 50%); pointer-events: none; }
+.intro-revealing .story-intro { opacity: 0; pointer-events: none; }
 .intro-art { position: absolute; inset: -5%; opacity: .12; filter: blur(3px) saturate(.6); }
 .intro-halo {
   position: absolute;
@@ -110,11 +110,12 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   border-radius: 50%;
   background: radial-gradient(circle, rgb(245 185 94 / 16%), rgb(183 114 41 / 5%) 45%, transparent 70%);
 }
-.intro-crest { filter: drop-shadow(0 0 12px rgb(255 189 98 / 35%)); }
+.intro-logo { filter: drop-shadow(0 0 16px rgb(240 93 29 / 40%)); }
+/* Glow is applied outside the masked image; no rectangular clip bounds. */
+.intro-logo { overflow: visible; }
+.logo-brush-stroke { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+.intro-playing .logo-brush-stroke { animation: logo-brush-draw 2s linear 100ms both; }
 .intro-playing .intro-halo { animation: intro-halo 3.5s ease-out both; }
-.intro-playing .intro-ring { transform-origin: center; animation: intro-ring 3.5s ease-out both; }
-.intro-playing .crest-stroke { stroke-dasharray: 1; animation: crest-draw 1.8s ease-out both; }
-.intro-playing .crest-stroke--detail { animation-delay: .35s; }
 .intro-playing .intro-kicker { animation: intro-text 650ms ease-out 450ms both; }
 .intro-playing .intro-wordmark { animation: intro-text 900ms ease-out 750ms both; }
 .intro-playing .intro-caption { animation: intro-text 700ms ease-out 1100ms both; }
@@ -129,9 +130,9 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   box-shadow: 0 0 12px 3px rgb(255 163 65 / 40%);
   animation: intro-ember 4s linear var(--delay) infinite;
 }
-@keyframes crest-draw {
+@keyframes logo-brush-draw {
   from { stroke-dashoffset: 1; opacity: 0; }
-  15% { opacity: 1; }
+  3% { opacity: 1; }
   to { stroke-dashoffset: 0; opacity: 1; }
 }
 @keyframes intro-text {
@@ -142,10 +143,6 @@ html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
   from { opacity: 0; transform: scale(.5); }
   55% { opacity: 1; transform: scale(1); }
   to { opacity: .3; transform: scale(1.6); }
-}
-@keyframes intro-ring {
-  from { opacity: 0; transform: rotate(-45deg); }
-  to { opacity: 1; transform: rotate(20deg); }
 }
 @keyframes intro-ember {
   0% { opacity: 0; transform: translate3d(0, 0, 0); }
