@@ -352,7 +352,7 @@ html.atmosphere-paused #atmosphere * {
     rgb(0 0 0 / 75%) 45%,
     transparent 82%
   );
-  transform-origin: 78% 0;
+  transform-origin: -78% 0;
   animation: sunlight-drift 20s ease-in-out infinite alternate;
 }
 @keyframes sunlight-drift {

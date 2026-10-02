@@ -1188,7 +1188,7 @@ html.atmosphere-paused #atmosphere * {
   mix-blend-mode: screen;
   filter: blur(10px);
   mask-image: linear-gradient( to bottom, black 15%, rgb(0 0 0 / 75%) 45%, transparent 82% );
-  transform-origin: 78% 0;
+  transform-origin: -78% 0;
   animation: sunlight-drift 20s ease-in-out infinite alternate;
 }
 @keyframes sunlight-drift {
