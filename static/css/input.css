@@ -1,1 +1,58 @@
 @import 'tailwindcss';
+
+/* Custom motion tokens remain in the Tailwind build alongside utility styling. */
+@theme {
+  --animate-wallpaper-drift: wallpaper-drift 32s ease-in-out infinite alternate;
+  --animate-mist-drift: mist-drift 28s ease-in-out infinite alternate;
+  --animate-hero-reveal: hero-reveal 900ms ease-out both;
+  @keyframes wallpaper-drift {
+    from { transform: scale(1.015) translate3d(-0.25%, 0, 0); }
+    to { transform: scale(1.055) translate3d(0.25%, -0.5%, 0); }
+  }
+  @keyframes mist-drift {
+    from { transform: translate3d(-6%, 0, 0); }
+    to { transform: translate3d(6%, -5%, 0); }
+  }
+  @keyframes hero-reveal {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer components {
+  .wallpaper-depth {
+    transform: translate3d(var(--depth-x, 0px), var(--depth-y, 0px), 0);
+  }
+  .mist {
+    background: radial-gradient(ellipse at 35% 80%, #e2e8f0 0%, transparent 55%), radial-gradient(ellipse at 75% 90%, #d4b784 0%, transparent 45%);
+  }
+  .pointer-glow {
+    background: radial-gradient(500px circle at var(--glow-x, 50%) var(--glow-y, 50%), rgb(255 216 151 / 12%), transparent 75%);
+  }
+  .ember {
+    position: absolute;
+    bottom: -24px;
+    left: var(--ember-left);
+    width: var(--ember-size);
+    height: var(--ember-size);
+    border-radius: 50%;
+    background: #ffd497;
+    box-shadow: 0 0 9px 2px rgb(255 167 76 / 45%);
+    opacity: 0;
+    animation: ember-rise var(--ember-duration) linear var(--ember-delay) infinite;
+  }
+}
+
+@keyframes ember-rise {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  15% { opacity: .65; }
+  75% { opacity: .4; }
+  100% { opacity: 0; transform: translate3d(var(--ember-drift), -110vh, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ember, .mist, .pointer-glow { display: none; }
+  .wallpaper-depth { transform: none; }
+}
+
+html.atmosphere-paused #atmosphere * { animation-play-state: paused; }
