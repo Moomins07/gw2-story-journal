@@ -4,10 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Our Story — GW2 Journal</title>
+    <script src="{{ url_for('static', filename='js/intro.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
     <script defer src="{{ url_for('static', filename='js/atmosphere.js') }}"></script>
   </head>
   <body class="isolate min-h-screen bg-zinc-950 text-stone-100">
+    <!-- A once-per-session cinematic; the homepage remains usable without JavaScript. -->
+    <div id="story-intro" class="story-intro" role="dialog" aria-modal="true" aria-label="Welcome to Our Story" hidden>
+      <div class="intro-art" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/wallpaper.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover" />
+      </div>
+      <div class="intro-embers absolute inset-0 overflow-hidden" aria-hidden="true"></div>
+      <div class="intro-halo" aria-hidden="true"></div>
+      <div class="intro-title relative px-6 text-center">
+        <svg class="intro-crest mx-auto h-32 w-32 text-amber-200 sm:h-44 sm:w-44" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+          <!-- Original dragon-inspired heraldry, drawn as glowing gold strokes. -->
+          <circle class="intro-ring" cx="100" cy="100" r="85" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="2 9" />
+          <path class="crest-stroke" pathLength="1" d="M100 12 109 27 100 42 91 27Z M188 100 173 109 158 100 173 91Z M100 188 109 173 100 158 91 173Z M12 100 27 109 42 100 27 91Z" stroke="currentColor" stroke-width="1" />
+          <path class="crest-stroke" pathLength="1" d="M144 57C124 31 81 39 63 65C43 94 52 125 78 141C99 154 128 147 141 128C152 111 150 91 139 81L129 73 145 68 132 58 116 64 109 53 108 73 96 85 111 88 114 101 123 93C132 108 124 126 108 130C86 136 67 120 66 101C66 79 82 65 99 63" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          <path class="crest-stroke crest-stroke--detail" pathLength="1" d="M66 74 51 70 58 85 45 91 58 101 49 115 66 119 M139 124 157 124 143 138 148 150 130 147 M119 78 124 76 M76 132 72 149 87 143" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <p class="intro-kicker mt-7 text-[10px] uppercase tracking-[0.45em] text-amber-200/80">Two souls. One journey.</p>
+        <p class="intro-wordmark mt-4 font-serif text-5xl tracking-[0.12em] text-stone-100 sm:text-7xl">OUR STORY</p>
+        <p class="intro-caption mt-5 text-xs tracking-[0.22em] text-stone-300/75">A chronicle of Tyria</p>
+      </div>
+      <button id="skip-intro" type="button" class="absolute bottom-8 right-6 rounded-sm border border-amber-100/25 bg-zinc-950/40 px-5 py-3 text-[10px] uppercase tracking-[0.2em] text-amber-100/80 backdrop-blur-sm transition-colors hover:border-amber-200/70 hover:text-amber-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-200 sm:right-10">
+        Skip intro <span aria-hidden="true">&#8594;</span>
+      </button>
+    </div>
     <!-- All atmosphere layers are decorative and leave controls clickable. -->
     <div id="atmosphere" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
       <div class="scene-frame absolute -inset-8">
