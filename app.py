@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 
 app = Flask(__name__)
 
@@ -13,11 +13,12 @@ def get_chapters():
     # Each dictionary represents one chapter with an ID and title.
     chapters = [
         # TODO: Add two dictionaries containing "id" and "title".
-        {'01': 'Chapter 1'},
-        {'02': 'Chapter 2'}
+        {"id": 1,"title": 'Chapter 1'},
+        {"id": 2,"title": 'Chapter 2'}
+        
 
     ]
 
     # TODO: Return the list as a JSON response using jsonify.
-    for chapter in chapters:
-        return jsonify(chapter)
+  
+    return jsonify(chapters)
