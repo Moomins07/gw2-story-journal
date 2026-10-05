@@ -19,17 +19,15 @@ function loadingChaptersText() {
 
 
 async function loadChapters() {
+    loadChapterBtn.disabled = true //disable button at start if fetch request
     loadingChaptersText()
 
     try {
-
-
         const response = await fetch('/api/chapters')
-        const chapters = await response.json()
-
         if (!response.ok) {
             throw new Error(`Chapter request failed: ${response.status}`)
         }
+        const chapters = await response.json()
 
         chapterContainer.replaceChildren()
 
@@ -41,6 +39,8 @@ async function loadChapters() {
     } catch (error) {
         chapterContainer.textContent = 'Could not load chapters. Please try again.'
         console.error('Chapter loading failed:', error)
+    } finally {
+        loadChapterBtn.disabled = false //disable button at at the end of the fetch request
     }
 }
 
