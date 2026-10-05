@@ -2,6 +2,51 @@
    npm run build:css rebuilds styles; npm run css watches source changes. */
 @import 'tailwindcss';
 
+/* A compact charcoal panel and theme-aware halo echo the journal's gold trim. */
+.chapter-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .85rem 1.25rem .85rem .85rem;
+  max-width: 100%;
+  border: 1px solid rgb(var(--site-accent-rgb, 201 163 101) / 25%);
+  border-radius: .4rem;
+  background: linear-gradient(135deg, rgb(28 27 25 / 94%), rgb(14 16 19 / 92%));
+}
+/* Keep the faint circular frame stationary while the Charr emblem turns inside. */
+.chapter-loader__seal {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgb(var(--site-accent-rgb, 201 163 101) / 28%);
+  border-radius: 50%;
+  box-shadow: inset 0 0 16px rgb(var(--site-accent-rgb, 201 163 101) / 8%), 0 0 20px rgb(var(--site-accent-rgb, 201 163 101) / 12%);
+}
+/* Several quick turns ease into a short rest; the original colours stay intact. */
+.chapter-loader__emblem {
+  object-fit: contain;
+  /* Two seconds of fast spinning, 0.8 seconds slowing, then a 0.2-second rest. */
+  animation: chapter-emblem-turn 3s linear infinite;
+}
+/* Small, spaced ivory lettering matches the reference's quiet metadata. */
+.chapter-loader__text {
+  color: #eee5d6;
+  font-size: .75rem;
+  letter-spacing: .1em;
+  line-height: 1.6;
+}
+/* Eight turns at four revolutions per second, then two turns easing to a stop. */
+@keyframes chapter-emblem-turn {
+  0% { transform: rotate(0deg); }
+  /* Two thirds of three seconds is two seconds; match the fast speed before easing down. */
+  66.666667% { transform: rotate(2880deg); animation-timing-function: cubic-bezier(.25, .4, .5, 1); }
+  /* Ten complete turns at 2.8 seconds; hold the angle for the final 0.2 seconds. */
+  93.333333%, 100% { transform: rotate(3600deg); }
+}
+/* Keep the same readable loading indicator without rotation for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .chapter-loader__emblem { animation: none; }
+}
+
 /* Tailwind motion tokens for decorative atmosphere. */
 /* Animation tokens expose motion-safe:animate-* utilities. Keyframes define visual states. */
 @theme {
