@@ -27,7 +27,25 @@ The page uses the browser's default appearance because it does not load the Tail
 
 - The user reported that `/chronicle` displayed the heading and paragraph in the browser.
 - The guide reviewed the route and template and found their structure correct. The guide did not independently run the page.
-- A comment describing practice chapter data currently sits after the return inside `chronicle()`. Move it above the chapter API decorator at the left margin so it describes the right route. This is a readability change.
+- The practice-data comment was subsequently moved into the chapter API function, where it describes the correct code.
+
+## Follow-up: Homepage navigation
+
+I changed the homepage chapter button into an `<a>` link, with `href="{{ url_for('chronicle') }}"` and the label **Our Chronicle**. I kept its visual classes and arrow, and removed the old button attributes, chapter script tag, output container, and loader template.
+
+**I learned:** Links navigate to pages; buttons perform actions. `url_for('chronicle')` uses Flask's endpoint name (the function name by default) to generate the destination URL. Removing a control also requires checking scripts and CSS that refer to it.
+
+The guide reviewed the navigation markup and removal of the old exercise hooks. Browser navigation has not been independently verified. The link's old explanatory comment still describes a button and should be updated.
+
+The character-theme CSS originally targeted `#load-chapters`, so removing that ID stopped the custom link colours from following the selected character theme. I added `id="chronicle-link"` to the anchor. At my request, the guide updated both theme selectors in `static/css/input.css` to match and updated the CSS comment. The generated stylesheet still needs rebuilding (or the running watcher to finish); visual theme behavior has not been independently verified.
+
+**I learned:** CSS ID selectors must match the element's actual ID. Changing an HTML ID can require updating its styling references. Edit `input.css`, then let Tailwind generate `output.css` rather than editing the generated file by hand.
+
+Suggested checks: click the homepage link, verify `/chronicle` opens, and verify the link follows both character themes after the selector update.
+
+Follow-up code review confirmed that the anchor ID and both source CSS selectors match. The generated `output.css` contains `#chronicle-link` and no longer contains `#load-chapters`, confirming the stylesheet was regenerated. The route and template still match, and the old exercise hooks are absent from the homepage. Visual browser checks remain separate from this code review.
+
+Useful commit point after checking: `Connect homepage to Chronicle page`.
 
 ## Git and Boot.dev
 
@@ -41,4 +59,4 @@ How Flask connects a URL, a Python function, and an HTML template—and why my f
 
 ## Next step
 
-Connect the homepage to the Chronicle page using a navigation link. Styling and chapter data come afterward.
+Rebuild the stylesheet and check the navigation link's themes, then connect chapter data to the Chronicle page. Its final layout comes later.

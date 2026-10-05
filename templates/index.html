@@ -46,11 +46,6 @@
       defer
       src="{{ url_for('static', filename='js/homepage.js') }}"
     ></script>
-    <!-- Load chapter interactions after the page's HTML has been parsed. -->
-    <script
-      defer
-      src="{{ url_for('static', filename='js/chapters.js') }}"
-    ></script>
   </head>
   <body class="isolate flex min-h-svh flex-col bg-zinc-950 text-stone-100">
     <!-- A once-per-session cinematic; the homepage remains usable without JavaScript. -->
@@ -353,19 +348,18 @@
           memories we keep.
         </p>
         <!-- Visual chapter button: its ID is your future JavaScript hook; Tailwind styles layout, gold borders, hover/focus and motion preferences. -->
-        <button
-          id="load-chapters"
+        <a
+          id="chronicle-link"
+          href="{{ url_for('chronicle') }}"
           class="group mt-8 inline-flex min-h-13 cursor-pointer items-center justify-center gap-[0.85rem] rounded-[5px] border border-[#c9a365] bg-linear-135 from-[#29251f] to-[#17191c] px-8 py-[0.8rem] font-serif text-[1.05rem] leading-[1.4] text-[#f5dfb2] shadow-[inset_0_0_0_1px_rgb(244_214_158_/_10%),0_4px_16px_rgb(0_0_0_/_25%)] transition-[border-color,box-shadow,transform] duration-180 hover:border-[#efd09a] hover:shadow-[inset_0_0_0_1px_rgb(244_214_158_/_18%),0_0_20px_rgb(201_163_101_/_18%)] motion-safe:hover:-translate-y-px active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5dfb2] motion-reduce:transition-none"
-          type="button"
-          aria-controls="chapters"
         >
-          <span>Load chapters</span>
+          <span>Our Chronicle</span>
           <span
             class="transition-transform duration-180 motion-safe:group-hover:translate-x-[3px] motion-reduce:transition-none"
             aria-hidden="true"
             >&#8594;</span
           >
-        </button>
+        </a>
         <div class="mt-5 flex flex-wrap gap-3 lg:hidden">
           <div class="relative" data-character="green">
             <button
@@ -536,18 +530,6 @@
         </div>
         <p id="theme-status" class="sr-only" role="status"></p>
         <p id="home-save-status" class="sr-only" role="status"></p>
-        <!-- Future chapter code inserts content here; aria-live politely announces newly loaded content. -->
-        <div id="chapters" class="mt-8" aria-live="polite"></div>
-        <!-- Inert, reusable loading artwork; chapters.js displays a copy on click. -->
-        <template id="chapter-loading-template">
-          <div class="chapter-loader" role="status">
-            <!-- Tailwind sizes the frame to 40px and the crisp original emblem to 32px. -->
-            <span class="chapter-loader__seal size-10 shrink-0" aria-hidden="true">
-              <img class="chapter-loader__emblem size-8" src="{{ url_for('static', filename='images/pyre-emblem-colour.webp') }}" width="32" height="32" alt="" />
-            </span>
-            <span class="chapter-loader__text">Loading chapters…</span>
-          </div>
-        </template>
       </section>
       <p
         class="mt-7 flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-stone-300/65"

@@ -522,16 +522,16 @@ html[data-character-theme="purple"] {
   --site-accent-rgb: 196 181 253;
   --site-shimmer: #ede9fe;
 }
-/* The chapter button uses custom art colours rather than Tailwind amber tokens,
+/* The Chronicle link uses custom art colours rather than Tailwind amber tokens,
    so map those explicitly when a character palette is selected. */
-html[data-character-theme] #load-chapters {
+html[data-character-theme] #chronicle-link {
   color: var(--color-amber-100);
   border-color: var(--site-accent);
   background-image: linear-gradient(135deg, rgb(var(--site-accent-rgb) / 18%), #17191c);
   box-shadow: inset 0 0 0 1px rgb(var(--site-accent-rgb) / 12%), 0 4px 16px rgb(0 0 0 / 25%);
   outline-color: var(--site-accent);
 }
-html[data-character-theme] #load-chapters:hover {
+html[data-character-theme] #chronicle-link:hover {
   box-shadow: inset 0 0 0 1px rgb(var(--site-accent-rgb) / 20%), 0 0 20px rgb(var(--site-accent-rgb) / 20%);
 }
 html[data-character-theme] .story-heading { color: var(--color-amber-100); }
