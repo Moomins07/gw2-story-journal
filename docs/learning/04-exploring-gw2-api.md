@@ -1,0 +1,61 @@
+# 04 — Exploring the real GW2 API
+
+## What I did
+
+Following an exercise to request `/v2/stories/1` from Python, I shared the returned record. It contained `My Story`, the Charr race, and three named chapters. The guide has not yet reviewed my exploration script or dependency changes.
+
+## What I learned
+
+The parsed result is a Python dictionary. Its `name` field holds the story name. Its `chapters` field is a list of dictionaries, each containing a `name`.
+
+This public response describes a story. It does not identify an account or character, and it contains no completion state. Story catalogue data and player progress are separate concerns.
+
+I noticed the missing completion information and raised it before integrating the data. Inspecting real responses early helps check whether an API supports the features I want.
+
+The character-specific `/v2/characters/:id/quests` endpoint requires an API key with account, characters, and progression permissions. Its documented response contains quest IDs, not chapter completion percentages. We need to inspect actual character data and its mapping to quests and stories before deciding how to calculate progress. Missing data should not automatically mean incomplete.
+
+Reference: [Character quests API documentation](https://wiki.guildwars2.com/wiki/API:2/characters/:id/quests).
+
+## Checks and next step
+
+The user supplied the successful story response. An authenticated character request and reliable chapter completion mapping have not been verified yet. Next, inspect character-specific quest data with the key kept on the backend and out of Git and chat. Journal notes and manual completion can remain available where API coverage is insufficient.
+
+## Blog idea
+
+Why a story catalogue is different from player progress, and what inspecting my first API response taught me about project scope.
+
+## Follow-up: Authenticated character request
+
+The guide reviewed my public exploration script and confirmed Requests was recorded in `requirements.txt`. I then reported successfully running the character quest script with an API key and shared its list of quest IDs. The authenticated script itself has not yet been reviewed by the guide.
+
+I learned that the argument to `getpass` is a prompt label, not the secret. I enter the actual key at runtime, where input is hidden. Calling `.strip()` on the returned string removes surrounding whitespace.
+
+The quest response is a list of references, not quest descriptions. The public `/v2/quests` endpoint resolves these IDs into records with names and story IDs. A story ID in a quest record refers to `/v2/stories`; it is not the same kind of ID as a quest ID.
+
+Next exercise: look up one returned quest, inspect its `name` and `story`, and compare it with known in-game progress. The authenticated result is confirmed by the user; complete chapter-level coverage and completion mapping remain unverified.
+
+## Follow-up: Completion text versus completion status
+
+I looked up quest 77 and shared its record: `Fury of the Dead`, linked to story 1. Its goals contain `active` instructions and a `complete` narrative description.
+
+**I learned:** A field named `complete` is not necessarily a completion flag. Here it is public text describing the finished goal, available even without identifying a character. It does not prove that my character completed the quest.
+
+Character-specific quest IDs supply the progress information; public quest records supply names and descriptions. My returned list contains specific IDs, not every quest between 71 and 667, and the numeric ordering is not a play timeline.
+
+The user reported a successful lookup. API completion coverage can be incomplete, and replaying a chapter can reset reported completion, so this list should not be treated as a permanent, exhaustive play history. Reference: [Story Journal API limitations](https://wiki.guildwars2.com/wiki/Story_Journal/table).
+
+## Combining names and progress: review in progress
+
+I requested three mission records together using `params={"ids": "71,72,77"}`. I looped over the records, checked each ID against `completed_ids`, added a readable `status`, and printed the name and status. The guide found this loop correct.
+
+I reported output showing only Fury of the Dead complete, consistent with the exercise's temporary `{77}` comparison set. The saved script reviewed afterward instead contained `completed_ids = {set(character_quest_ids)}`. That line would raise `TypeError: unhashable type: 'set'` before printing mission statuses, so the reported output came from a different version or state of the script.
+
+**I learned:** `set(character_quest_ids)` creates the set of IDs I need. Wrapping it in braces attempts to create another set containing that mutable set, which Python cannot do. Use `completed_ids = set(character_quest_ids)` to restore the real character data. Final output from the corrected saved script is still to be checked.
+
+### Reported successful check
+
+After the correction, I shared output for Kihto Pyrewalker showing Chain of Command, Time for a Promotion, and Fury of the Dead all marked complete. This matches the three IDs in my previously reported character response. The guide has not independently executed the authenticated script.
+
+This completes the small exercise of combining public mission names with character-specific quest membership. Both label branches were exercised through user-reported outputs, including the earlier temporary comparison set. Useful commit point: `Explore GW2 mission names and character progress`.
+
+Next, extract reusable request and data-preparation functions before connecting the real data to Flask. Terminal prompts should remain in the exploration script rather than run during website requests.

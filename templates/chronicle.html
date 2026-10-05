@@ -10,5 +10,10 @@
     <!-- Start with plain content to verify the Flask route works. -->
     <h1>Our Chronicle</h1>
     <p>A place for the chapters of our journey.</p>
+    <ul>
+      {% for chapter in chapters %}
+      <li>{{chapter.id}}, {{chapter.title}}</li>
+      {% endfor %}
+    </ul>
   </body>
 </html>
