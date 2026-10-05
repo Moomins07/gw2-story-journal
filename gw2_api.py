@@ -25,3 +25,28 @@ def get_character_quest_ids(api_key, character_name):
 
     # Inspect the record before deciding how the journal should use it.
     return quests
+
+
+def get_quests(quest_ids):
+    # Collect the IDs as strings because join requires string values.
+    id_strings = []
+
+    # Convert each integer and add it to the list.
+    for quest_id in quest_ids:
+        id_strings.append(str(quest_id))
+
+    # Put a comma between each string, with no trailing comma.
+    ids_parameter = ",".join(id_strings)
+
+    response = requests.get(
+    "https://api.guildwars2.com/v2/quests",
+    params={"ids": ids_parameter},
+    timeout=10,
+)
+
+    response.raise_for_status()
+
+    # Convert the JSON response into Python data.
+    quests = response.json()
+    
+    return quests

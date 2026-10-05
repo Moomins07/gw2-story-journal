@@ -77,3 +77,19 @@ The follow-up review confirmed the original inline character request and unused 
 The helper's multiline request arguments could still be indented more clearly, and its return comment should describe returning quest IDs rather than inspecting a record. These are readability improvements, not functional blockers.
 
 Useful commit point: `Extract character quest request into reusable helper`. Next, extract the public mission-description request into a second helper.
+
+## Public mission helper completed
+
+I added `get_quests(quest_ids)` to `gw2_api.py`. It converts integer IDs into strings, joins them with commas, and supplies that string through `params={"ids": ids_parameter}`. It checks the response status and returns parsed mission records. The exploration script calls `get_quests([71, 72, 77])` instead of making this request itself.
+
+**I learned:** `join` is a string method: the string before it is the separator. The explicit loop I chose builds a list of strings before joining them. The compact alternative uses a generator expression: `",".join(str(quest_id) for quest_id in quest_ids)` supplies converted strings one at a time.
+
+`params` needs a dictionary mapping the API parameter name to its value. `{ids_parameter}` is a set, not that dictionary. A comma is also needed between the `params` and `timeout` arguments.
+
+While debugging an unexpectedly broad response, I changed the public URL to `/v2/quests` without a trailing slash and corrected the loop to compare `quest['id']` rather than the entire quest dictionary against the set of integers. I subsequently reported that it worked. The guide verified these changes in the saved code, but did not independently reproduce the API response or isolate the trailing slash as its cause.
+
+Both requests are now in reusable helpers. The remaining `import requests` in the exploration script is unused and can be removed. Consistent indentation of multiline request arguments is a useful readability cleanup.
+
+Useful commit point: `Extract public quest lookup into reusable helper`.
+
+Next, prepare journal-friendly mission records with IDs, titles, and completion flags in a separate function, then use those records from the exploration script before integrating Flask.
