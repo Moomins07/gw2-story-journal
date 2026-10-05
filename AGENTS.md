@@ -16,6 +16,7 @@ Use `docs/design/our-story-concept.png` as the visual reference for all frontend
 - Use `static/images/favicon.png` and the coloured loading-screen emblem, `static/images/pyre-emblem-colour.png`, as existing brand references: green and purple Charr around shared gold fire.
 - Preserve the homepage character-selection easter egg implemented in `static/js/theme.js`: selecting a character changes the site's accent theme to their colour; selecting the same character again restores shared gold. The choice is remembered in localStorage under `gw2-character-theme`.
 - Future pages and components must respect the active character theme using the existing theme tokens in `static/css/input.css`, rather than hardcoding gold accents. Maintain the dark fantasy composition, readable contrast, and character identities across all three palettes.
+
 ## Code explanations
 
 The user requires inline comments explaining any code added, in every language. Place explanations alongside the relevant code using the language's comment syntax (Python, JavaScript, HTML/Jinja, CSS, shell, etc.). Explain purpose and behavior so the user can understand, change, and debug it. Comment meaningful statements and blocks, including frontend styling and decorative effects. For formats that cannot contain comments, such as JSON, provide the explanation in a directly accompanying document rather than producing invalid syntax. Do not hand-edit generated files solely to add comments; explain their source and generation instead.
@@ -24,3 +25,10 @@ The user requires inline comments explaining any code added, in every language. 
 
 The user has substantial web development experience and delegates most frontend implementation to Codex to prioritize Python/backend learning. Build frontend layout, styling, and decorative effects when requested, and explain the changes. Follow the README's learning boundary: the user writes Python and JavaScript application logic with guidance; do not take over backend or application logic without authorization. Keep implementation proportional to the project's local Flask, Tailwind, and SQLite scope.
 
+## Learning documentation
+
+- After each completed guided step, update `docs/learning` without waiting for the user to ask. Update the existing entry when continuing an exercise, or create a numbered Markdown entry for a new topic and link it from `docs/learning/README.md`.
+- Use simple, clear language to record what the user did, why it works, what they learned, mistakes and fixes, and useful checks. Highlight concepts the user found interesting, such as reusable templates or cleanup with `finally`.
+- Keep the notes useful as a future reference and a starting point for blog posts. Include relevant blog ideas, useful Git commit points, and how the work contributes to the Boot.dev requirements.
+- Document actual progress. Distinguish code review, user-reported results, independently verified checks, and suggested checks. Do not invent completed work, test results, commits, or time spent.
+- Explain any code examples with inline comments and preserve the user's ownership of Python and JavaScript application logic.

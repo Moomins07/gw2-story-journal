@@ -20,9 +20,9 @@ function loadingChaptersText() {
 
 async function loadChapters() {
     loadChapterBtn.disabled = true //disable button at start if fetch request
-    loadingChaptersText()
 
     try {
+        loadingChaptersText()
         const response = await fetch('/api/chapters')
         if (!response.ok) {
             throw new Error(`Chapter request failed: ${response.status}`)
