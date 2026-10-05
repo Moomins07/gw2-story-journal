@@ -59,3 +59,21 @@ After the correction, I shared output for Kihto Pyrewalker showing Chain of Comm
 This completes the small exercise of combining public mission names with character-specific quest membership. Both label branches were exercised through user-reported outputs, including the earlier temporary comparison set. Useful commit point: `Explore GW2 mission names and character progress`.
 
 Next, extract reusable request and data-preparation functions before connecting the real data to Flask. Terminal prompts should remain in the exploration script rather than run during website requests.
+
+## Refactoring into a shared module: review in progress
+
+I created root-level `gw2_api.py` with `get_character_quest_ids(api_key, character_name)` and imported it into the exploration script. The helper encodes the name, sends an authenticated request with a timeout, checks the status, and returns JSON data. It does not prompt or print.
+
+I corrected indentation so the status check, JSON parsing, and return are inside the function. I also encountered `ModuleNotFoundError` while running the script directly. Running `.venv/bin/python -m scripts.explore_character_quests` from the project root makes the root module discoverable.
+
+The latest code review found the helper structurally correct and its returned data used by the script. However, the old inline character request still remains before the helper call, so the script requests character progress twice. Remove that old block and the now-unused `quote` import before considering the refactor complete. The guide has not independently executed this version.
+
+**I learned:** Extracting a function means replacing the original code with a call, not keeping both. Multiline arguments inside parentheses allow flexible indentation, but consistent indentation and comments aligned with the function body make the structure easier to understand.
+
+### Shared character helper completed
+
+The follow-up review confirmed the original inline character request and unused `quote` import were removed from the exploration script. Character progress now comes from one helper call. The user reported the step complete; the guide checked the code but did not independently run the authenticated request.
+
+The helper's multiline request arguments could still be indented more clearly, and its return comment should describe returning quest IDs rather than inspecting a record. These are readability improvements, not functional blockers.
+
+Useful commit point: `Extract character quest request into reusable helper`. Next, extract the public mission-description request into a second helper.

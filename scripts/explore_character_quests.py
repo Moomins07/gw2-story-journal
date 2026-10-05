@@ -1,11 +1,10 @@
 # Read a secret without displaying it in the terminal.
 from getpass import getpass
 
-# Encode character names safely for use inside a URL.
-from urllib.parse import quote
-
 # Send HTTP requests to GW2.
 import requests
+
+from gw2_api import get_character_quest_ids
 
 # Keep the key in memory for this script run.
 api_key = getpass("GW2 API key: ").strip()
@@ -13,22 +12,11 @@ api_key = getpass("GW2 API key: ").strip()
 # Enter the character's exact in-game name.
 character_name = input("Character name: ").strip()
 
-# Encode spaces and other characters as part of one URL segment.
-encoded_name = quote(character_name, safe="")
-
-# Request this character's quest IDs.
-response = requests.get(
-    f"https://api.guildwars2.com/v2/characters/{encoded_name}/quests",
-    headers={"Authorization": f"Bearer {api_key}"},
-    timeout=10,
-)
-
-# Raise an error for unsuccessful HTTP status codes before parsing JSON.
-response.raise_for_status()
-
 # Convert the JSON response into Python data.
-character_quest_ids = response.json()
+# Retrieve character progress using the shared request function.
+character_quest_ids = get_character_quest_ids(api_key, character_name)
 
+# Prepare efficient membership checks.
 completed_ids = set(character_quest_ids)
 
 quest_response = requests.get(
@@ -50,3 +38,4 @@ for quest in quests:
 
     print(quest['name'], quest['status'])
     
+
