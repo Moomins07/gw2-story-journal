@@ -32,6 +32,28 @@ I supplied output with one dictionary key, `1`, whose value is a list containing
 
 Next, look up the parent story's readable name through a reusable public story request helper. Story 1 was previously observed as `My Story`; grouping by this ID is not yet grouping by the individual chapter names within that story.
 
+## Step 3: Fetch parent story descriptions
+
+I added `get_stories(story_ids)` using the public `/v2/stories` endpoint. It converts IDs to strings, joins them, passes the resulting value as the `ids` parameter, checks the response, and returns JSON. The exploration script collects `list(story_groups.keys())` and calls the helper.
+
+The guide reviewed the helper and caller and found their connections correct. I reported that it appeared to work, but have not supplied the returned story record for this version; the guide did not independently execute it.
+
+**I learned:** Dictionary keys provide the unique story IDs already discovered during grouping. Fetching public story descriptions lets us replace numeric group labels with readable names. The helper's local result is currently named `quests`; renaming it to `stories` improves clarity without changing behavior.
+
+Useful commit point after checking: `Fetch parent story descriptions for mission groups`. Next, combine each story description with its matching mission list using the story ID, not list position.
+
+## Step 4: Combine story names and mission groups
+
+I supplied successful script output containing one journal record: ID 1, title `My Story`, and a `missions` list with Chain of Command, Time for a Promotion, and Fury of the Dead. Each mission retains its ID, story ID, and `completed: True`. This is user-reported execution evidence; the guide did not independently run the authenticated script.
+
+**I learned:** `stories` contains API descriptions, while `story_groups` is a dictionary built by my own code. `story_groups[story['id']]` uses the shared ID to retrieve the matching prepared mission list. The combined record must be appended inside the story loop so every story is retained.
+
+I initially used `story['chapters']` as the mission list. Those are chapter-name records, not the prepared missions with completion flags. In the game, chapters contain missions, but quest records link directly to a parent story without an explicit chapter ID. We deliberately paused chapter mapping to keep this exercise manageable.
+
+The current structure is story → selected missions. It does not represent the complete story catalogue, chronological mission order, or chapter completion. Next, extract this already-working grouping and combination into reusable functions, one at a time, then render the same structure on the Chronicle page.
+
+Useful commit point: `Combine story titles with grouped mission records`. Blog idea: understanding the difference between an API response and a data structure I build from it.
+
 ## Git and blog ideas
 
 Useful commit point after checking: `Preserve parent story IDs in mission records`.

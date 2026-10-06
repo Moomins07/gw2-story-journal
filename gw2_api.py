@@ -52,6 +52,30 @@ def get_quests(quest_ids):
     return quests
 
 
+def get_stories(story_ids):
+    # Collect the IDs as strings because join requires string values.
+    id_strings = []
+
+    # Convert each integer and add it to the list.
+    for story_id in story_ids:
+        id_strings.append(str(story_id))
+
+    # Put a comma between each string, with no trailing comma.
+    ids_parameter = ",".join(id_strings)
+
+    response = requests.get(
+    "https://api.guildwars2.com/v2/stories",
+    params={"ids": ids_parameter},
+    timeout=10,
+)
+
+    response.raise_for_status()
+
+    # Convert the JSON response into Python data.
+    stories = response.json()
+    
+    return stories
+
 
 def build_mission_records(quests, completed_ids):
     missions = []
