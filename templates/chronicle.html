@@ -1,23 +1,85 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Support readable text and layouts on different screen sizes. -->
+    <!-- Use the same assets and early theme restoration as the homepage. -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chronicle — Our Story</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}" />
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    <!-- Tailwind builds the shared stylesheet from input.css. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
   </head>
-  <body>
-    <!-- Start with plain content to verify the Flask route works. -->
-    <h1>Our Chronicle</h1>
-    <p>A place for the chapters of our journey.</p>
-    <ul>
-      {% for chapter in chapters %}
-      <!-- Display the mission title and its character-specific progress. -->
-      <li>
-        {{ chapter.title }} {% if chapter.completed %} — Complete {% else %} —
-        Not reported complete {% endif %}
-      </li>
-      {% endfor %}
-    </ul>
+  <body class="chronicle-page">
+    <!-- A keyboard shortcut avoids repeating the navigation on every visit. -->
+    <a class="chronicle-skip" href="#chronicle-main">Skip to the Chronicle</a>
+    <header class="chronicle-nav">
+      <a class="chronicle-wordmark" href="{{ url_for('home') }}">Our Story</a>
+      <!-- Mark the current page explicitly for assistive technology. -->
+      <nav aria-label="Main navigation">
+        <a href="{{ url_for('chronicle') }}" aria-current="page">Chronicle</a>
+        <a href="{{ url_for('home') }}">Return to our story <span aria-hidden="true">↗</span></a>
+      </nav>
+      <img src="{{ url_for('static', filename='images/pyre-emblem-colour.webp') }}" width="38" height="38" alt="Green and purple Charr around a shared gold flame" />
+    </header>
+    <main id="chronicle-main">
+      <!-- Scenery fades into the page, echoing the middle panel of the concept art. -->
+      <section class="chronicle-hero" aria-labelledby="chronicle-title">
+        <img class="chronicle-landscape" src="{{ url_for('static', filename='images/wallpaper-distance.webp') }}" alt="" fetchpriority="high" />
+        <div class="chronicle-hero-copy">
+          <p class="chronicle-eyebrow">Two Charr. One shared journey.</p>
+          <h1 id="chronicle-title">Chronicle</h1>
+          <div class="chronicle-ornament" aria-hidden="true">◇</div>
+          <p>Our journey through Tyria, one memory at a time.</p>
+        </div>
+      </section>
+      <div class="chronicle-layout">
+        <section class="chronicle-missions" aria-labelledby="missions-title">
+          <!-- Scope is explicit: these are the mission records supplied by the existing route. -->
+          <div class="chronicle-section-heading">
+            <div><p class="chronicle-eyebrow">Personal story</p><h2 id="missions-title">Footsteps through Tyria</h2></div>
+            <span class="chronicle-count">{{ chapters | length }} missions loaded</span>
+          </div>
+          <p class="chronicle-introduction">Every adventure leaves a mark. Open a mission to see its reported progress.</p>
+          <ol class="chronicle-timeline">
+            {% for chapter in chapters %}
+            <!-- Preserve the existing title/completed contract; neither order nor missing completion proves a lock or current mission. -->
+            <li class="chronicle-entry {% if chapter.completed %}chronicle-entry--complete{% endif %}">
+              <span class="chronicle-marker" aria-hidden="true">{% if chapter.completed %}✓{% else %}◇{% endif %}</span>
+              <!-- Native details provides keyboard-accessible expansion without new application JavaScript. -->
+              <details class="chronicle-card">
+                <summary>
+                  <span class="chronicle-thumbnail" aria-hidden="true"><img src="{{ url_for('static', filename='images/wallpaper-distance.webp') }}" alt="" loading="lazy" /></span>
+                  <span class="chronicle-card-copy"><span class="chronicle-eyebrow">Personal story · {{ '%02d' | format(loop.index) }}</span><span class="chronicle-mission-title">{{ chapter.title }}</span><span class="chronicle-state">{% if chapter.completed %}Complete{% else %}Not reported complete{% endif %}</span></span>
+                  <span class="chronicle-chevron" aria-hidden="true">›</span>
+                </summary>
+                <div class="chronicle-mission-detail">
+                  <!-- API completion belongs to the configured character; it does not establish progress for both companions. -->
+                  <p class="chronicle-eyebrow">Recorded progress</p>
+                  <p>{% if chapter.completed %}The configured character’s API record reports this mission complete.{% else %}This mission is not reported complete in the configured character’s API record.{% endif %}</p>
+                  <div class="chronicle-notes-placeholder"><h3>A memory waiting to be written</h3><p>This is where your impressions and character notes can live. Journal editing and storage are still to come.</p></div>
+                </div>
+              </details>
+            </li>
+            {% else %}
+            <!-- An empty response still produces a useful page without fabricated progress. -->
+            <li class="chronicle-empty">No missions supplied yet. Our next chapter is waiting.</li>
+            {% endfor %}
+          </ol>
+          <p class="chronicle-data-note">Showing the missions currently supplied by the backend, rather than the full story catalogue. Completion reflects the configured character.</p>
+        </section>
+        <aside class="chronicle-companions" aria-labelledby="companions-title">
+          <!-- Character branding stays green/purple even when the site's accent theme changes. -->
+          <p class="chronicle-eyebrow">Side by side</p>
+          <h2 id="companions-title">Our companions</h2>
+          <div class="chronicle-companion chronicle-companion--green"><img src="{{ url_for('static', filename='images/thya-portrait.webp') }}" width="64" height="64" alt="Portrait of Thya" loading="lazy" /><div><h3>Thya</h3><p>Pyrewatcher</p></div><span class="chronicle-character-dot" aria-hidden="true"></span></div>
+          <div class="chronicle-companion chronicle-companion--purple"><img src="{{ url_for('static', filename='images/kihto-portrait.webp') }}" width="64" height="64" alt="Portrait of Kihto" loading="lazy" /><div><h3>Kihto</h3><p>Pyrewalker</p></div><span class="chronicle-character-dot" aria-hidden="true"></span></div>
+          <div class="chronicle-aside-note"><span aria-hidden="true">◇</span><p>Different footsteps.<br />The same story.</p></div>
+          <a class="chronicle-home-link" href="{{ url_for('home') }}">Back to our overlook <span aria-hidden="true">→</span></a>
+        </aside>
+      </div>
+    </main>
+    <!-- A quiet closing line keeps the journal atmosphere without adding unimplemented navigation. -->
+    <footer class="chronicle-footer">Our Story <span aria-hidden="true">◇</span> Somewhere in Tyria, together.</footer>
   </body>
 </html>
