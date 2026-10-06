@@ -62,6 +62,11 @@ def build_mission_records(quests, completed_ids):
             is_completed = True
         else: is_completed = False
 
-        missions.append({"id": quest['id'], "title": quest['name'], "completed": is_completed})
+        missions.append({
+        "id": quest['id'], 
+        "title": quest['name'], 
+        "story_id": quest['story'],
+        "completed": is_completed
+        })
 
     return missions

@@ -21,7 +21,23 @@ quests = get_quests([71, 72, 77])
 # Combine mission descriptions with this character's reported progress.
 missions = build_mission_records(quests, completed_ids)
 
-# Inspect the prepared data before passing it to Flask.
-print(missions)
+# Collect mission records under their parent story IDs.
+story_groups = {}
+
+for mission in missions:
+  
+    # Read the parent story for this mission.
+    story_id = mission["story_id"]
+
+    # Check if story id is in story_groups dict
+    if story_id not in story_groups:#
+        #create empty list for that story_id
+        story_groups[story_id] = []
+    
+    #append mission to empty list in story_groups
+    story_groups[story_id].append(mission)
+
+# Inspect the groups before using them on the website.
+print(story_groups)
     
 

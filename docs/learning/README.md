@@ -9,6 +9,7 @@ Simple notes about building **gw2-story-journal**, my Boot.dev personal project.
 3. [Passing Python data into a Jinja template](03-jinja-chapters.md)
 4. [Exploring the real GW2 API](04-exploring-gw2-api.md)
 5. [Displaying real GW2 missions in Flask](05-real-missions-in-flask.md)
+6. [Preserving story relationships and grouping missions](06-story-groups.md)
 6. [Styling the Chronicle frontend](06-chronicle-frontend.md)
 
 ## Keeping this folder updated
