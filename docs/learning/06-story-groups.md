@@ -54,6 +54,22 @@ The current structure is story → selected missions. It does not represent the 
 
 Useful commit point: `Combine story titles with grouped mission records`. Blog idea: understanding the difference between an API response and a data structure I build from it.
 
+## Extracting the grouping helper and restoring the caller
+
+I moved the mission-grouping loop into `group_missions_by_story(missions)` in `gw2_api.py`. The guide reviewed the corrected helper; I subsequently reported its grouping result working. The loop stays in the helper and is replaced by one function call in the exploration script.
+
+During this refactor, I accidentally removed the separate story-combination loop. At my explicit request, the guide restored it with explanatory comments. The guide also restored the story-description request and moved the grouping call before `story_groups.keys()`, so the dictionary exists before it is used.
+
+The restored sequence is: prepare missions → group missions → collect story IDs → fetch story descriptions → combine named stories with mission lists → print the result. The authenticated script has not been independently run after this restoration.
+
+**I learned:** Refactoring relocates behavior; the helper's loop still runs when called. Grouping and adding story names are separate jobs. Variables must be created before later statements use them.
+
+### Restoration verified by the user
+
+After initially sharing output from the grouping stage, I reran the script and supplied the combined list containing `My Story` and all three prepared missions with completion flags. This confirms the restored flow in the user-reported run; the guide did not independently execute the authenticated script. The grouping-helper extraction and caller restoration are now complete.
+
+Useful commit point: `Extract mission grouping helper and preserve named story output`.
+
 ## Git and blog ideas
 
 Useful commit point after checking: `Preserve parent story IDs in mission records`.

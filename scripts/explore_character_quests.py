@@ -1,7 +1,7 @@
 # Read a secret without displaying it in the terminal.
 from getpass import getpass
 
-from gw2_api import get_character_quest_ids, get_quests, build_mission_records, get_stories
+from gw2_api import get_character_quest_ids, get_quests, build_mission_records, get_stories, group_missions_by_story
 
 # Keep the key in memory for this script run.
 api_key = getpass("GW2 API key: ").strip()
@@ -21,40 +21,31 @@ quests = get_quests([71, 72, 77])
 # Combine mission descriptions with this character's reported progress.
 missions = build_mission_records(quests, completed_ids)
 
-# STORY_ID AND LIST OF MISSIONS
-story_groups = {}
+# Group prepared missions using the shared helper.
+story_groups = group_missions_by_story(missions)
 
-for mission in missions:
-  
-    # Read the parent story for this mission.
-    story_id = mission["story_id"]
-
-    # Check if story id is in story_groups dict
-    if story_id not in story_groups:#
-        #create empty list for that story_id
-        story_groups[story_id] = []
-    
-    #append mission to empty list in story_groups
-    story_groups[story_id].append(mission)
-
-# Collect the parent story IDs already discovered during grouping.
+# Collect parent story IDs after the grouping dictionary has been created.
 story_ids = list(story_groups.keys())
 
-# Request descriptions for those parent stories.
+# Request the descriptions used to give each group a readable story name.
 stories = get_stories(story_ids)
 
-
+# Collect named stories with their matching mission lists.
 journal_stories = []
 
 for story in stories:
+    # Create one journal record using the API story's ID and name.
     journal = {}
+    journal["id"] = story["id"]
+    journal["title"] = story["name"]
 
-    journal['id'] = story['id']
-    journal['title'] = story['name']
-    journal['missions'] = story_groups[story["id"]]
-    
+    # Match prepared missions by story ID rather than by list position.
+    journal["missions"] = story_groups[story["id"]]
+
+    # Retain every combined record, not just the last story in the loop.
     journal_stories.append(journal)
 
+# Inspect the combined story and mission structure.
 print(journal_stories)
 
 
@@ -62,4 +53,3 @@ print(journal_stories)
 
 
     
-

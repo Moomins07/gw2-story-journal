@@ -94,3 +94,19 @@ def build_mission_records(quests, completed_ids):
         })
 
     return missions
+
+
+def group_missions_by_story(missions):
+    story_groups = {}
+
+    for mission in missions:
+        story_id = mission["story_id"]
+
+        if story_id not in story_groups:#
+            story_groups[story_id] = []
+
+        story_groups[story_id].append(mission)
+
+    return story_groups
+
+
