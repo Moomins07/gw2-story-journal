@@ -43,3 +43,37 @@ The user supplied a screenshot showing the timeline visible through a completed 
 The overlap came from the completed marker's translucent background: the rail remained visible through it. An opaque background covers the rail inside the circle without removing the line between missions. This is a CSS-only correction; completion data and backend behavior remain unchanged.
 
 Verification: the stylesheet build and whitespace check passed. Browser appearance after this correction has not been independently verified. Suggested check: refresh the Chronicle in gold, green, and purple themes and confirm completed ticks remain green with no line through their circles.
+
+## Follow-up: Illustrated 503 view
+
+The user implemented a 503 response for missing API configuration and asked Codex to integrate the selected anime illustration. Code review confirmed the route supplies `chapters=[]` and an `error` string when configuration is missing. Codex left Python/backend files untouched and replaced the template's plain error paragraph with an illustrated panel, friendly copy, the escaped backend message, and links to retry or return home.
+
+The panel uses `kihto-thya-api-503-anime-v2.png`, retaining serious Kihto and cute Thya. Tailwind utilities handle spacing, typography, sizing, and responsive layout; small custom CSS rules supply theme-aware borders and backgrounds. Inline comments explain the additions. The template's existing `error` variable chooses between this panel and the mission list, so an error no longer also shows a misleading zero-mission count or ordinary empty-state text.
+
+Independently verified: the Tailwind build passed; isolated fixture rendering checked error, success, and empty-data branches, escaped diagnostic text, and the selected artwork reference. No application import or live API request was needed. Browser appearance and real route behavior were not independently verified. The current reviewed backend handles missing configuration; this frontend does not add handling for other API failures.
+
+Suggested check: visit `/chronicle` with the existing missing-configuration setup, then restore configuration and verify missions return. Retry requests the same route, so missing configuration still requires fixing the settings. Suggested commit: `Add illustrated Chronicle error view`.
+
+Blog idea: separating HTTP error handling from a friendly Jinja error presentation. This builds on the user's Python validation work while keeping frontend assistance distinct from backend ownership.
+
+## Follow-up: Thya's brown hair
+At the user's request, the 503 illustration was edited with the built-in image generator to give Thya chestnut brown hair. The template now uses static/images/kihto-thya-api-503.png, and the previous anime-v2 asset was deleted. The new asset and its template reference were checked; corner transparency was verified. Python/backend code remains unchanged.
+
+
+The 503 illustration was subsequently corrected to give Kihto a lion tail with a tuft only at the tip. The existing asset was replaced in place, retaining the template reference and avoiding extra image variants. Corner transparency was checked; no backend code changed.
+
+
+## Follow-up: Separate 502 and 503 presentation
+
+The user added a RequestException branch returning HTTP 502 and requested matching artwork. Code review found the route returns the status but does not yet pass it into the template. A response status is not automatically a Jinja variable.
+
+Codex added the 502 illustration and made the template use `error_code` for its label, image and copy. Known 502/503 values select matching artwork. Missing or other codes do not show misleading numbered artwork. Isolated fixture rendering passed for 502, 503, missing status and success. The existing Python code was left untouched to preserve the user's backend learning boundary; the live route still needs the following keyword argument inside each respective render_template call:
+
+```python
+# In the missing-configuration branch, pass the displayed code as template data.
+error_code=503,
+# In the RequestException branch instead, pass its displayed code as template data.
+error_code=502,
+```
+
+Each line belongs in its own branch, alongside chapters and error; the existing response tuples still determine HTTP status. The fixture checks are not a live route check. Suggested commit after making and checking that connection: `Match Chronicle error artwork to response status`. Blog idea: why returning HTTP 502 does not give a template access to that status automatically.

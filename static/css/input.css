@@ -634,3 +634,11 @@ html[data-character-theme] .journal-preview { border-color: rgb(var(--site-accen
   .chronicle-mission-title { font-size: 1.1rem; }
   .chronicle-card-copy .chronicle-eyebrow { font-size: .5rem; }
 }
+
+/* Tailwind handles error-panel layout; these colours connect it to all three character themes. */
+.chronicle-error { border-color: rgb(var(--chronicle-rgb) / 28%); background: linear-gradient(135deg, #1a1e23, #101418); }
+/* Quiet diagnostic text remains legible without competing with the illustration. */
+.chronicle-error-reason { border-color: rgb(var(--chronicle-rgb) / 18%); background: #0d1013; color: #c7c3bb; }
+/* The retry link inherits the theme accent and existing Chronicle keyboard-focus styling. */
+.chronicle-error-retry { border-color: var(--chronicle-accent); color: var(--chronicle-accent); }
+.chronicle-error-retry:hover { background: rgb(var(--chronicle-rgb) / 12%); }
