@@ -12,7 +12,11 @@
     <p>A place for the chapters of our journey.</p>
     <ul>
       {% for chapter in chapters %}
-      <li>{{chapter.id}}, {{chapter.title}}</li>
+      <!-- Display the mission title and its character-specific progress. -->
+      <li>
+        {{ chapter.title }} {% if chapter.completed %} — Complete {% else %} —
+        Not reported complete {% endif %}
+      </li>
       {% endfor %}
     </ul>
   </body>

@@ -50,3 +50,18 @@ def get_quests(quest_ids):
     quests = response.json()
     
     return quests
+
+
+
+def build_mission_records(quests, completed_ids):
+    missions = []
+
+    for quest in quests: 
+        is_completed = None
+        if quest['id'] in completed_ids:
+            is_completed = True
+        else: is_completed = False
+
+        missions.append({"id": quest['id'], "title": quest['name'], "completed": is_completed})
+
+    return missions

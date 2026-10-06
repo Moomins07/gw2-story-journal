@@ -93,3 +93,23 @@ Both requests are now in reusable helpers. The remaining `import requests` in th
 Useful commit point: `Extract public quest lookup into reusable helper`.
 
 Next, prepare journal-friendly mission records with IDs, titles, and completion flags in a separate function, then use those records from the exploration script before integrating Flask.
+
+## Journal-friendly mission records
+
+On 6 October 2026, the guide reviewed my `build_mission_records(quests, completed_ids)` function and its caller. It builds a new list of dictionaries containing `id`, `title`, and a Boolean `completed`, using quest-ID membership to choose the flag. The exploration script imports and calls it, then prints the prepared records. This code is correctly connected; a runtime result for this specific version has not yet been reported or independently verified.
+
+**I learned:** Data preparation can be a separate function that takes existing data and returns a new structure without making requests or prompting. The API uses `name`, while the journal uses `title`; this function translates between them. Membership expressions already return Booleans, so `is_completed = quest['id'] in completed_ids` can replace the longer if/else. The initial `None` assignment is unnecessary because both branches overwrite it.
+
+Explanatory comments should be added to this new function. Suggested checks: all three real IDs produce `True`; using `{77}` as a temporary comparison set produces two `False` values and one `True`. A `False` means not reported complete, rather than proof the mission was never completed.
+
+Useful commit point after checking: `Prepare mission records for journal display`. Next, configure the Flask process to read its API key and character name from environment variables, keeping terminal prompts in the exploration script.
+
+## Environment configuration: implementation reviewed, check pending
+
+I reported following the terminal steps to export `GW2_API_KEY` and `GW2_CHARACTER_NAME`. The guide confirmed `app.py` imports `os` and reads both settings inside `chronicle()`. These values are not yet used by an API request, so the page still displays practice chapters.
+
+**I learned:** Environment variables are named configuration values supplied to a running process. `read -s` collects the key without displaying input; `export` allows programs launched from that shell to inherit the value. `os.environ.get` reads a value in Python and returns `None` when it is absent. This is separate from an `.env` file; these terminal commands do not create one.
+
+An already-running Flask process does not gain later shell changes, so it must be restarted from the configured terminal. A different terminal or a fresh shell may need the variables set again.
+
+Suggested verification: run the project's Python from the configured WSL terminal and print only whether each variable contains a nonblank value. Do not print the key. Then restart Flask in that terminal and temporarily report only the same presence checks inside the route. Presence checks do not establish that the key is valid or has the necessary permissions; that requires an API request. Runtime verification remains pending.

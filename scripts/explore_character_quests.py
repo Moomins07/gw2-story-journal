@@ -1,7 +1,7 @@
 # Read a secret without displaying it in the terminal.
 from getpass import getpass
 
-from gw2_api import get_character_quest_ids, get_quests
+from gw2_api import get_character_quest_ids, get_quests, build_mission_records
 
 # Keep the key in memory for this script run.
 api_key = getpass("GW2 API key: ").strip()
@@ -18,13 +18,10 @@ completed_ids = set(character_quest_ids)
 
 quests = get_quests([71, 72, 77])
 
-for quest in quests:
+# Combine mission descriptions with this character's reported progress.
+missions = build_mission_records(quests, completed_ids)
 
-    if quest['id'] in completed_ids:
-        quest['status'] = "complete"
-    else:
-        quest['status'] = "not reported complete"
-
-    print(quest['name'], quest['status'])
+# Inspect the prepared data before passing it to Flask.
+print(missions)
     
 
