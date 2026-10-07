@@ -132,7 +132,12 @@
           </p>
           {# Display each prepared act with its missions in catalogue order. #}
           {% for journal_act in acts %}
-          <h3>{{ journal_act.title }}</h3>
+          <h3>
+            {# Generate the act route URL using its Flask endpoint and local catalogue ID. #}
+            <a href="{{ url_for('chronicle_acts', act_id=journal_act.id) }}">
+              {{ journal_act.title }}
+            </a>
+          </h3>
 
           <p>
             {# Use the catalogue total so missing records do not shrink the

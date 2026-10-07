@@ -111,7 +111,10 @@ def chronicle():
 def chronicle_acts(act_id):
 
     if act_id == act['id']:
-        return f"Act requested: - {act['title']}"
+        return render_template(
+            "acts_journal.html",
+            journal_act=act
+            )
 
     abort(404)
     

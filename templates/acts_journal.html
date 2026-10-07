@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {# Identify the requested act in the browser tab using its catalogue title. #}
+    <title>{{ journal_act.title }} — Our Story</title>
+  </head>
+  <body>
+    {# Display the catalogue title passed in by the Flask route. #}
+    <h1>{{ journal_act.title }}</h1>
+    {# Count the expected quest IDs; this catalogue count does not indicate completion. #}
+    <p>{{ journal_act.quest_ids | length }} missions in this act</p>
+    {# Build the return URL from the Chronicle view function's endpoint name. #}
+    <a href="{{ url_for('chronicle') }}">Back to Chronicle</a>
+  </body>
+</html>
