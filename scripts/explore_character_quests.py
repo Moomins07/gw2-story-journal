@@ -38,8 +38,11 @@ quests = get_quests(selected_quest_ids)
 # Completion is checked against character progress, not assumed from catalogue selection.
 missions = build_mission_records(quests, completed_ids)
 
-# Index prepared missions so each can be found by its quest ID.
+# Prepare the act's ordered mission checklist and reusable progress counts.
 journal_act = build_journal_act(act, missions)
+# Check whether the available mission records cover the catalogue's expected checklist.
+print(f"Expected: {journal_act['expected_count']}  Missing:{journal_act['missing_count']}")
+
 
 # Display the progress summary returned by the reusable helper.
 print(f"{journal_act['completed_count']} of {journal_act['mission_count']}")

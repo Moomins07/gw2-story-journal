@@ -161,14 +161,20 @@ def build_journal_act(act, missions):
     for mission in ordered_missions:
         if mission['completed'] == True:
             completed_count += 1
-   
-
+    # Count every mission ID the catalogue expects, even if its description is unavailable.
+    expected_count = len(act["quest_ids"])
+    # Missing records indicate unavailable mission data, not uncompleted missions.
+    missing_count = expected_count - len(ordered_missions)
+    # Return the ordered checklist and counts so callers can display progress and missing data.
     journal_act = {
         "id": act['id'],
         "title": act['title'],
         "missions": ordered_missions,
         "completed_count": completed_count,
-        "mission_count": len(ordered_missions)
+        "mission_count": len(ordered_missions),
+        "expected_count": expected_count,
+        "missing_count": missing_count
+
     }
 
     

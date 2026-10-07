@@ -1,5 +1,6 @@
 # Flask handles requests; render_template produces HTML and jsonify produces JSON.
-from flask import Flask, render_template, jsonify
+# abort stops a request with an HTTP error, such as 404 for an unknown act.
+from flask import Flask, render_template, jsonify, abort
 # Read configuration supplied to this Python process.
 import os
 # Reuse our helpers for requesting GW2 data and preparing journal records.
@@ -103,6 +104,20 @@ def chronicle():
         missions=journal_act["missions"],
         acts=[journal_act],
     )
+
+
+# Capture the journal act ID from the URL and pass it to the function below.
+@app.get("/chronicle/acts/<act_id>")
+def chronicle_acts(act_id):
+
+    if act_id == act['id']:
+        return f"Act requested: - {act['title']}"
+
+    abort(404)
+    
+
+
+    
 
 # Keep the practice JSON endpoint independent from the real Chronicle page.
 @app.get("/api/chapters")

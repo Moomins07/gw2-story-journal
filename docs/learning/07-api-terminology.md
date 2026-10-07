@@ -139,3 +139,29 @@ I moved the counting loop into build_journal_act and added completed_count and m
 The exercise still needs a small cleanup: the helper currently prints the dictionary, while the exploration script does not print the returned count fields. Move diagnostic output to the script so calling the helper from Flask does not also print. Remove obsolete commented-out prints and add a purpose comment to the counting loop. The key lesson is that return supplies reusable data to the caller; print only displays it in a terminal.
 
 I completed that cleanup: the helper now returns data without printing, and the exploration script prints the two returned count fields. The guide confirmed this in the source, and I supplied output of `6 of 6`. At my request, the guide added a comment explaining that the counter starts at zero, counts only True completion flags, and returns the result for both callers. The reusable progress-summary step is complete. Next, display those fields in the act's template section. Useful commit point: `Add reusable act progress counts`.
+
+## Displaying the progress summary
+
+I added the count fields beneath the act heading and reported that the summary displays. Source review found the fields reversed: mission_count appears before completed_count. Both currently equal six, so the normal character data hides the mistake. The display must place completed_count first, then mission_count.
+
+Next check: temporarily supply an empty completion set in Flask's build_mission_records call. The page should say 0 of 6, then return to the real completed_ids. This checks the template wiring as well as the calculation. No independent browser check was performed. I learned that equal values can hide swapped fields, so a check with different values is useful.
+
+## Detecting missing mission descriptions: in progress
+
+I calculated expected_count from the catalogue ID list and missing_count by subtracting the available ordered mission count. With missions[:-1] temporarily supplied to the act helper, I reported expected count 6, missing count 1, and the existing available-mission summary 5 of 5. The guide reviewed the arithmetic as correct.
+
+The new counts are currently printed inside the helper rather than returned in journal_act. They still need dictionary fields so Flask and Jinja can access them. Move the diagnostic prints into the script, explain expected versus available counts in comments, and restore the full missions argument after checking. Source review also found the template still displays mission_count before completed_count; that earlier swapped-field correction remains outstanding. No independent runtime or browser test was performed in this review.
+
+On the next source review, the guide confirmed expected_count and missing_count are now returned, and their diagnostic print has moved into the script. Remaining work: restore missions instead of missions[:-1] after the missing-record test, correct the swapped template fields, and add purpose comments for the expected and missing calculations and the diagnostic print. The script's helper-call comment should describe preparing an act, not merely indexing missions. No new runtime result was supplied for this revision.
+
+### Missing-record calculation complete
+
+The guide confirmed I restored the full missions argument and corrected the template to show completed_count first. At my request, the guide added comments explaining expected checklist size, unavailable records, the returned summary, and script diagnostics. Python syntax checks passed, and offline checks of the actual helper confirmed full data gives expected 6, missing 0, completed 6, available 6; omitting one record gives expected 6, missing 1, completed 5, available 5. No authenticated request or browser check was performed for this revision.
+
+The calculation step is complete. Next, use expected_count as the displayed denominator and conditionally show a missing-data message in Jinja. This avoids implying the whole act is complete just because all available records are complete.
+
+## Displaying incomplete mission data honestly
+
+My first Jinja attempt used the correct missing_count > 0 condition, but extra standalone braces would have appeared as text, and the else branch hid the summary when data was missing. At my request, the guide corrected the frontend: the completed_count of expected_count summary always appears, followed by a conditional missing-record message. The message distinguishes unavailable data from character completion and handles singular and plural records. Outdated API-story comments were removed and the denominator comment now describes catalogue expectations.
+
+The guide reviewed the template source. A render check could not run because the available bundled Python lacks Jinja2; no browser check was performed. Suggested checks: full data should show 6 of 6 with no warning; temporarily omitting one record in Flask's act-builder call should show 5 of 6 plus one unavailable record. Restore full data afterward. A missing record remains unknown, rather than proof that its mission is incomplete. Useful commit point: `Show expected act total and missing mission data`.

@@ -130,10 +130,23 @@
             Every adventure leaves a mark. Open a mission to see its reported
             progress.
           </p>
-          <!-- These groups correspond to API story records, not yet the full storyline/act hierarchy. -->
           {# Display each prepared act with its missions in catalogue order. #}
           {% for journal_act in acts %}
           <h3>{{ journal_act.title }}</h3>
+
+          <p>
+            {# Use the catalogue total so missing records do not shrink the
+            progress denominator. #} {{ journal_act.completed_count }} of {{
+            journal_act.expected_count }}
+          </p>
+          {# Explain unavailable records separately from character completion.
+          #} {% if journal_act.missing_count > 0 %}
+          <p>
+            {{ journal_act.missing_count }} mission record{% if
+            journal_act.missing_count != 1 %}s{% endif %} unavailable. Progress
+            information may be incomplete.
+          </p>
+          {% endif %}
 
           <ol class="chronicle-timeline">
             {% for mission in journal_act.missions %}
