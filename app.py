@@ -3,7 +3,11 @@ from flask import Flask, render_template, jsonify
 # Read configuration supplied to this Python process.
 import os
 # Reuse our helpers for requesting GW2 data and preparing journal records.
-from gw2_api import get_character_quest_ids, get_quests, build_mission_records, group_missions_by_story, get_stories, build_journal_stories
+from gw2_api import get_character_quest_ids, get_quests, build_mission_records, build_journal_act
+
+# Use the catalogue's expected checklist independently of character completion.
+from journal_catalog import act
+
 # Catch expected HTTP and network failures from Requests.
 from requests.exceptions import RequestException
 
@@ -25,7 +29,7 @@ def home():
     # Render the homepage template and send the resulting HTML to the browser.
     return render_template("index.html")
 
-# Register the page that displays a sample of this character's real mission progress.
+# Register the page showing the catalogue act and this character's mission progress.
 @app.get("/chronicle")
 def chronicle():
     # Flask's CLI loads .env when python-dotenv is installed; read those values here.
@@ -40,7 +44,7 @@ def chronicle():
         return render_template(
             "chronicle.html",
             missions=[],
-            stories=[],
+            acts=[],
             error="The journal needs a GW2 API key and character name configured.",
             error_code=503
         ), 503
@@ -52,12 +56,12 @@ def chronicle():
         # The helper checks the HTTP status and parses the returned JSON.
         character_quest_ids = get_character_quest_ids(api_key, character_name)
 
-        # Keep a set for membership checks and the original list for selecting a sample.
+        # Use a set to check whether each expected mission is reported complete.
         completed_ids = set(character_quest_ids)
 
-        # Select up to ten reported IDs to limit this development sample.
-        # This list slice does not fetch data or establish chronological play order.
-        selected_quest_ids = character_quest_ids[:100]
+        # Select the act's expected missions, including IDs absent from character progress.
+        # The catalogue also defines their narrative order for the act builder.
+        selected_quest_ids = act['quest_ids']
         # Label and fetch public mission descriptions for the selected numeric IDs.
         request_stage = "mission descriptions"
         quests = get_quests(selected_quest_ids)
@@ -66,18 +70,10 @@ def chronicle():
         # The completed flag checks whether each mission ID appears in the character set.
         missions = build_mission_records(quests, completed_ids)
 
-        # Build a dictionary mapping each parent story ID to its list of missions.
-        story_groups = group_missions_by_story(missions)
-        # Extract the unique story IDs needed for the story-description request.
-        story_ids = list(story_groups.keys())
+        # Combine the act's identity with its mission dictionaries in catalogue order.
+        journal_act = build_journal_act(act, missions)
+        
 
-        # Label and request public story records to give the groups readable names.
-        request_stage = "story descriptions"
-        api_stories = get_stories(story_ids)
-
-        # Match story descriptions to mission groups by ID, producing named story records.
-        # Each record has id, title, and missions for the template's nested loops.
-        journal_stories = build_journal_stories(api_stories, story_groups)
 
     # Handle expected Requests failures; programming errors remain visible in development.
     except RequestException as error:
@@ -94,14 +90,19 @@ def chronicle():
         return render_template(
             "chronicle.html",
             missions=[],
-            stories=[],
+            acts=[],
             error="Unable to load mission progress from the GW2 API. Please try again later.",
             error_code=502
         ), 502
 
     # Jinja builds the final HTML before Flask sends it to the browser.
-    # missions supplies the flat quest/mission count; stories supplies prepared API story groups.
-    return render_template("chronicle.html", missions=missions, stories=journal_stories)
+    # missions supplies the displayed mission count; acts supplies the outer template loop.
+    # Wrap the single prepared act in a list so each loop item is an act dictionary.
+    return render_template(
+        "chronicle.html",
+        missions=journal_act["missions"],
+        acts=[journal_act],
+    )
 
 # Keep the practice JSON endpoint independent from the real Chronicle page.
 @app.get("/api/chapters")

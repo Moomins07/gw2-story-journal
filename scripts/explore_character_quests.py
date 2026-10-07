@@ -41,7 +41,9 @@ missions = build_mission_records(quests, completed_ids)
 # Index prepared missions so each can be found by its quest ID.
 journal_act = build_journal_act(act, missions)
 
-print(journal_act)
+# Display the progress summary returned by the reusable helper.
+print(f"{journal_act['completed_count']} of {journal_act['mission_count']}")
+
 
 # Build a dictionary whose keys are story IDs and values are mission lists.
 story_groups = group_missions_by_story(missions)

@@ -93,3 +93,49 @@ The guide reviewed the extraction as correct. I supplied live script output show
 This refactor preserves the result while allowing Flask to reuse the same preparation. Some exercise comments still need cleanup: replace the instruction to move code with an explanation of the lookup, place the return explanation above the return, and describe the script's helper call as preparing the whole act. The earlier API-story exploration still runs separately after the print.
 
 Useful commit point: `Extract reusable journal act builder`. Next, connect catalogue selection and this helper to Flask, then adapt the template to consume the act. This adds original reusable Python code toward the Boot.dev requirements.
+
+## Preparing the act in Flask
+
+I connected catalogue selection and `build_journal_act` inside the Chronicle route. I supplied Flask terminal output showing all six missions in catalogue order. The guide reviewed the route and confirmed it builds and prints `journal_act`.
+
+The website still displays the earlier order because the successful `render_template` call passes `stories=journal_stories`. The template loops over those API-story groups, not the newly prepared act. Printing a variable does not send it to Jinja or change what the browser displays. My screenshot shows the older grouping still in use; this is expected at this intermediate step.
+
+Next, pass the act to the template and use its ordered missions. A temporary bridge can wrap `journal_act` in a one-item list for the existing outer loop, before renaming template variables to describe acts clearly. This separates checking Python preparation from connecting the display.
+
+## Passing the ordered act to Jinja
+
+The successful render now passes `missions=journal_act["missions"]` and `stories=[journal_act]`. The guide confirmed these arguments in the source. The template can therefore display the ordered act through its existing outer loop; a refreshed browser result has not yet been explicitly supplied.
+
+Initially I passed the dictionary directly as `stories=journal_act`. Iterating a dictionary produces its keys, which are strings here. Jinja's `story.title` then found the string's built-in title method rather than a dictionary title value. Wrapping the dictionary in a list makes each loop item the whole act dictionary.
+
+Next exercise: rename the render argument to `acts` and the template loop variable to `journal_act`, including both error returns. This describes the actual journal grouping and keeps API stories distinct. The old API-story request path can be removed in a separate cleanup after the display is checked.
+
+## Act template names reviewed
+
+I used the singular argument name `act` consistently in all three Flask render calls and the template's outer loop. The guide confirmed that these names match, and the inner loop reads `journal_act.missions`. This is valid, although `acts` would describe the list more clearly. Source review confirms the wiring; a refreshed browser result for this rename has not been supplied.
+
+The old story-grouping block still executes and makes an unused story-description request. Next cleanup: remove that block and its unused imports from app.py, remove the temporary print, and update outdated sample/story comments. Keep the helper definitions and exploration script for now. Avoiding an unused request also avoids an unnecessary source of page failures.
+
+## Chronicle cleanup and clearer comments
+
+The guide reviewed my removal of the unused story-grouping block, its imports, and the temporary print from app.py. At my request, the guide renamed the template list argument to `acts` in the success and both error returns, and updated the matching Jinja loop. The imported catalogue dictionary remains `act` because it represents one act.
+
+Comments now explain the expected catalogue checklist, independent completion checks, ordered act preparation, and the list passed to the template. The guide also replaced leftover exercise instructions in the act helper with purpose comments. Python syntax checks passed for app.py and gw2_api.py, and a source check confirmed all three Chronicle render calls use the template's `acts` name. No live browser or API check was performed for this cleanup.
+
+Suggested check: refresh /chronicle and confirm Act 1 still contains six missions in the same order. Useful commit point: `Display ordered journal act and remove unused story requests`.
+
+## Counting reported completion
+
+I added a counter in the exploration script, started it at zero, and increased it only when a mission's completed flag was True. I used len on the act's mission list for the displayed total. I supplied results of `6 of 6` with character progress and `0 of 6` with an empty completion set. These are user-reported runtime checks; the guide reviewed the counting logic and confirmed that the script now passes the real completed_ids again.
+
+The experiment shows that catalogue membership and completion are independent: all six missions remain present when none is reported complete. The counter still needs a purpose comment, and its name could be clearer as completed_count. Comparing a boolean with True works; directly checking the boolean is also possible.
+
+Next, move the calculation into build_journal_act and return completed_count and mission_count fields so both Flask and the script can reuse the summary. These counts describe the prepared mission list; missing public descriptions are currently skipped, so they do not prove full catalogue coverage. This adds original Python logic and offers a blog example of checking both completed and uncompleted data.
+
+### Progress fields reviewed
+
+I moved the counting loop into build_journal_act and added completed_count and mission_count to its returned dictionary. The guide reviewed these calculations as correct and independently exercised the actual helper with offline sample data: mixed completion produced 1 of 2, and an empty mission list produced 0 of 0. These were not live API checks.
+
+The exercise still needs a small cleanup: the helper currently prints the dictionary, while the exploration script does not print the returned count fields. Move diagnostic output to the script so calling the helper from Flask does not also print. Remove obsolete commented-out prints and add a purpose comment to the counting loop. The key lesson is that return supplies reusable data to the caller; print only displays it in a terminal.
+
+I completed that cleanup: the helper now returns data without printing, and the exploration script prints the two returned count fields. The guide confirmed this in the source, and I supplied output of `6 of 6`. At my request, the guide added a comment explaining that the counter starts at zero, counts only True completion flags, and returns the result for both callers. The reusable progress-summary step is complete. Next, display those fields in the act's template section. Useful commit point: `Add reusable act progress counts`.

@@ -138,7 +138,7 @@ def build_journal_stories(api_stories, story_groups):
 
 # Combine a catalogue act with prepared missions in catalogue order.
 def build_journal_act(act, missions):
-    # Move your mission lookup, ordering, and act-building code here.
+    # Create a lookup to retrieve each complete mission dictionary by its quest ID.
     missions_by_id = {}
 
     for mission in missions:
@@ -153,14 +153,25 @@ def build_journal_act(act, missions):
         # Add available mission dictionaries in catalogue order; missing records are skipped.
         if quest_id in missions_by_id:
             ordered_missions.append(missions_by_id[quest_id])
+    
 
+    # Start at zero and count only missions whose character-progress flag is True.
+    # Return this count with the act so Flask and the script can share the summary.
+    completed_count = 0
+    for mission in ordered_missions:
+        if mission['completed'] == True:
+            completed_count += 1
+   
 
-    # Combining catalogue information with actual mission data
     journal_act = {
         "id": act['id'],
         "title": act['title'],
-        "missions": ordered_missions
+        "missions": ordered_missions,
+        "completed_count": completed_count,
+        "mission_count": len(ordered_missions)
     }
 
+    
+
+    # Return the finished act dictionary to the script or Flask route that called us.
     return journal_act
-        # Return the finished act dictionary to the caller.

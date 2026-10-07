@@ -131,11 +131,12 @@
             progress.
           </p>
           <!-- These groups correspond to API story records, not yet the full storyline/act hierarchy. -->
-          {% for story in stories %}
-          <h3>{{ story.title }}</h3>
+          {# Display each prepared act with its missions in catalogue order. #}
+          {% for journal_act in acts %}
+          <h3>{{ journal_act.title }}</h3>
 
           <ol class="chronicle-timeline">
-            {% for mission in story.missions %}
+            {% for mission in journal_act.missions %}
             <!-- Preserve the existing title/completed contract; neither order nor missing completion proves a lock or current mission. -->
             <li
               class="chronicle-entry {% if mission.completed %}chronicle-entry--complete{% endif %}"
