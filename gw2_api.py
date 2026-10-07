@@ -20,13 +20,14 @@ def get_character_quest_ids(api_key, character_name):
     # Raise an error for unsuccessful HTTP status codes before parsing JSON.
     response.raise_for_status()
 
-    # Convert the JSON response into Python data.
-    quests = response.json()
+    # This endpoint returns numeric quest IDs, not public mission descriptions.
+    character_quest_ids = response.json()
 
-    # Inspect the record before deciding how the journal should use it.
-    return quests
+    # Return character-specific progress to the caller.
+    return character_quest_ids
 
 
+# Fetch API quest records: individual missions containing goals, not chapters.
 def get_quests(quest_ids):
     # Collect the IDs as strings because join requires string values.
     id_strings = []
@@ -52,6 +53,8 @@ def get_quests(quest_ids):
     return quests
 
 
+# Fetch literal API story records; their chapters field may contain names or be empty.
+# An API story is not always an entire expansion or the journal's act grouping.
 def get_stories(story_ids):
     # Collect the IDs as strings because join requires string values.
     id_strings = []
@@ -77,6 +80,7 @@ def get_stories(story_ids):
     return stories
 
 
+# Translate API quests into journal missions while preserving their API story IDs.
 def build_mission_records(quests, completed_ids):
     missions = []
 
@@ -96,6 +100,7 @@ def build_mission_records(quests, completed_ids):
     return missions
 
 
+# Group missions by the API quest's story reference; this does not map them to acts.
 def group_missions_by_story(missions):
     story_groups = {}
 
@@ -110,10 +115,11 @@ def group_missions_by_story(missions):
     return story_groups
 
 
-def build_journal_stories(stories, story_groups):
+# Add API story names to mission groups; API chapter metadata is a separate field.
+def build_journal_stories(api_stories, story_groups):
     journal_stories = []
 
-    for story in stories:
+    for story in api_stories:
         # Create one journal record using the API story's ID and name.
         journal = {}
         journal["id"] = story["id"]
@@ -128,3 +134,33 @@ def build_journal_stories(stories, story_groups):
     return journal_stories
 
 
+
+
+# Combine a catalogue act with prepared missions in catalogue order.
+def build_journal_act(act, missions):
+    # Move your mission lookup, ordering, and act-building code here.
+    missions_by_id = {}
+
+    for mission in missions:
+        # Store the entire mission dictionary under its numeric quest ID for later lookup.
+        missions_by_id[mission['id']] = mission
+
+
+    # Build the display list in the order defined by the act catalogue.
+    ordered_missions = []
+
+    for quest_id in act["quest_ids"]:
+        # Add available mission dictionaries in catalogue order; missing records are skipped.
+        if quest_id in missions_by_id:
+            ordered_missions.append(missions_by_id[quest_id])
+
+
+    # Combining catalogue information with actual mission data
+    journal_act = {
+        "id": act['id'],
+        "title": act['title'],
+        "missions": ordered_missions
+    }
+
+    return journal_act
+        # Return the finished act dictionary to the caller.

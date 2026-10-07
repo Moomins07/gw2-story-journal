@@ -1,41 +1,63 @@
-# Read a secret without displaying it in the terminal.
-from getpass import getpass
+# Read settings from this Python process's environment.
+import os
+# Load local settings from .env when the script starts.
+from dotenv import load_dotenv
 
-from gw2_api import get_character_quest_ids, get_quests, build_mission_records, get_stories, group_missions_by_story, build_journal_stories
+# Reuse the functions that request GW2 data and prepare it for the journal.
+from gw2_api import get_character_quest_ids, get_quests, build_mission_records, get_stories, group_missions_by_story, build_journal_stories, build_journal_act
 
-# Keep the key in memory for this script run.
-api_key = getpass("GW2 API key: ").strip()
+from journal_catalog import act
 
-# Enter the character's exact in-game name.
-character_name = input("Character name: ").strip()
+# Unlike Flask's startup command, this script must explicitly load .env.
+# Existing environment settings take precedence over values in the file.
+load_dotenv()
 
-# Convert the JSON response into Python data.
-# Retrieve character progress using the shared request function.
+# Read the key and character name without prompting or displaying the key.
+api_key = os.environ.get("GW2_API_KEY")
+character_name = os.environ.get("GW2_CHARACTER_NAME")
+
+# Stop before making requests if either setting is missing, empty, or only spaces.
+if not api_key or not api_key.strip() or not character_name or not character_name.strip():
+    raise SystemExit("Configure GW2_API_KEY and GW2_CHARACTER_NAME in .env.")
+
+# Request the quest IDs reported by GW2 for this character.
+# These are numbers identifying missions, not mission names or descriptions.
 character_quest_ids = get_character_quest_ids(api_key, character_name)
 
-# Prepare efficient membership checks.
+# Use a set to efficiently check whether a mission ID is reported complete.
 completed_ids = set(character_quest_ids)
 
-quests = get_quests([71, 72, 77])
+# Select the act's expected mission IDs from our journal catalogue.
+# This checklist is independent of which missions the character has completed.
+selected_quest_ids = act['quest_ids']
 
-# Combine mission descriptions with this character's reported progress.
+# Look up the selected IDs to get public mission names and parent story IDs.
+quests = get_quests(selected_quest_ids)
+
+# Prepare journal records: id, title, story_id, and a completed flag.
+# Completion is checked against character progress, not assumed from catalogue selection.
 missions = build_mission_records(quests, completed_ids)
 
-# Group prepared missions using the shared helper.
+# Index prepared missions so each can be found by its quest ID.
+journal_act = build_journal_act(act, missions)
+
+print(journal_act)
+
+# Build a dictionary whose keys are story IDs and values are mission lists.
 story_groups = group_missions_by_story(missions)
 
-# Collect parent story IDs after the grouping dictionary has been created.
+# Extract the dictionary's unique story IDs for the next API request.
 story_ids = list(story_groups.keys())
 
-# Request the descriptions used to give each group a readable story name.
-stories = get_stories(story_ids)
+# Fetch public story descriptions so numeric group IDs can have readable titles.
+api_stories = get_stories(story_ids)
 
-# Collect named stories with their matching mission lists.
+# Match each story description to its mission list using the shared story ID.
+# The result is a list of records containing id, title, and missions.
+journal_stories = build_journal_stories(api_stories, story_groups)
 
-journal_stories = build_journal_stories(stories, story_groups)
-
-# Inspect the combined story and mission structure.
-print(journal_stories)
+# Print the prepared journal data for inspection; never print the API key.
+# print(journal_stories)
 
 
    

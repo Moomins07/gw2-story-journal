@@ -100,6 +100,36 @@ In `chronicle.html`, I added an outer Jinja loop over stories, displayed each st
 
 Remaining readability task: comment the outer loop's purpose. Useful commit point: `Display story headings above grouped missions`. We still display only three selected missions; chapter mapping and wider catalogue coverage are separate future steps.
 
+## Sampling character IDs and loading script configuration
+
+I updated the exploration script to call `load_dotenv()` before reading the key and character name through `os.environ.get`. It exits with a clear message if either setting is missing or blank. The guide reviewed this order without reading the secret file.
+
+I changed the sample to `selected_quest_ids = character_quest_ids[:10]`, then passed those IDs to `get_quests` once. Initially, I assigned the result of `get_quests` to `selected_quest_ids` and passed those mission dictionaries into another request; the corrected code keeps IDs and descriptions separate.
+
+**I learned:** Flask's CLI loads dotenv configuration automatically when supported, but an ordinary script must explicitly load it. Slicing chooses a sample without making a request. A variable's name does not determine its type; the expression assigned to it does.
+
+The current script was reviewed as correctly connected for the existing nonempty character response. The updated runtime output has not yet been supplied or independently verified. Suggested check: run without prompts and confirm the grouped output contains up to ten mission records, all reported complete. Their sample position is not verified play order. Empty character responses will need a separate guard before requesting descriptions.
+
+Readability cleanup remains: remove the unused getpass import and its comment, and explain dotenv loading, configuration validation, and the sample selection with comments. Useful commit point after checking: `Load exploration settings from dotenv and sample character missions`.
+
+At my request, the guide updated the exploration script's comments to explain each stage in plain language, including settings loading, validation, the distinction between IDs and descriptions, sampling, grouping, and matching stories by ID. The unused getpass import had already been removed. This documentation-only edit did not change the script's behavior or independently verify API results.
+
+### Ten-mission sample verified by the user
+
+I supplied a successful script run without key or character prompts. It returned one named story, `My Story`, containing ten mission records with IDs 71, 72, 74, 75, 76, 77, 88, 89, 90, and 91, all marked completed. The guide checked the supplied output; it did not independently execute the authenticated request.
+
+This confirms the sample flow and local dotenv setup in the reported run. It does not verify chronological order, full story coverage, or unfinished mission selection. Next, apply the same limited selection in Flask while preserving the original character-ID list before converting it to a set.
+
+## Ten-mission sample in Flask: code reviewed
+
+I updated `chronicle()` to retain `character_quest_ids`, create a membership set from it, slice up to ten IDs, and pass that sample to `get_quests`. The existing preparation, grouping, story requests, and rendering remain connected. The guide reviewed this flow as correct for the current nonempty character response. Browser output for this route change has not yet been reported or independently verified.
+
+**I learned:** The same data can have two useful representations: a list for sampling by slice and a set for membership checks. The list's order does not establish play chronology. Selected missions all come from the character progress list, so this page is currently a sample of reported completed missions, not a complete checklist.
+
+Readability cleanup: replace the obsolete three-mission comment and explain the initial character request. Suggested check: refresh the Chronicle and confirm ten cards and a count of ten. A separate empty-response guard is still needed before public lookups to handle characters with no reported quests. Useful commit point after checking: `Display a sample of character missions in Chronicle`.
+
+At my request, the guide expanded `app.py` comments to explain Flask setup, each route, environment configuration, early returns, API requests, list/set roles, mission preparation, grouping, safe failure diagnostics, and the template inputs. The obsolete three-mission description was removed. This comment-only change preserved application behavior; it did not independently verify browser output.
+
 ## Git and blog ideas
 
 Useful commit point after checking: `Preserve parent story IDs in mission records`.

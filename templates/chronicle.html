@@ -123,24 +123,25 @@
               <h2 id="missions-title">Footsteps through Tyria</h2>
             </div>
             <span class="chronicle-count"
-              >{{ chapters | length }} missions loaded</span
+              >{{ missions | length }} missions loaded</span
             >
           </div>
           <p class="chronicle-introduction">
             Every adventure leaves a mark. Open a mission to see its reported
             progress.
           </p>
+          <!-- These groups correspond to API story records, not yet the full storyline/act hierarchy. -->
           {% for story in stories %}
           <h3>{{ story.title }}</h3>
 
           <ol class="chronicle-timeline">
-            {% for chapter in story.missions %}
+            {% for mission in story.missions %}
             <!-- Preserve the existing title/completed contract; neither order nor missing completion proves a lock or current mission. -->
             <li
-              class="chronicle-entry {% if chapter.completed %}chronicle-entry--complete{% endif %}"
+              class="chronicle-entry {% if mission.completed %}chronicle-entry--complete{% endif %}"
             >
               <span class="chronicle-marker" aria-hidden="true"
-                >{% if chapter.completed %}✓{% else %}◇{% endif %}</span
+                >{% if mission.completed %}✓{% else %}◇{% endif %}</span
               >
               <!-- Native details provides keyboard-accessible expansion without new application JavaScript. -->
               <details class="chronicle-card">
@@ -155,9 +156,9 @@
                     ><span class="chronicle-eyebrow"
                       >Personal story · {{ '%02d' | format(loop.index) }}</span
                     ><span class="chronicle-mission-title"
-                      >{{ chapter.title }}</span
+                      >{{ mission.title }}</span
                     ><span class="chronicle-state"
-                      >{% if chapter.completed %}Complete{% else %}Not reported
+                      >{% if mission.completed %}Complete{% else %}Not reported
                       complete{% endif %}</span
                     ></span
                   >
@@ -167,7 +168,7 @@
                   <!-- API completion belongs to the configured character; it does not establish progress for both companions. -->
                   <p class="chronicle-eyebrow">Recorded progress</p>
                   <p>
-                    {% if chapter.completed %}The configured character’s API
+                    {% if mission.completed %}The configured character’s API
                     record reports this mission complete.{% else %}This mission
                     is not reported complete in the configured character’s API
                     record.{% endif %}
