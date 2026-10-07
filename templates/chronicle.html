@@ -130,9 +130,11 @@
             Every adventure leaves a mark. Open a mission to see its reported
             progress.
           </p>
+          {% for story in stories %}
+          <h3>{{ story.title }}</h3>
 
           <ol class="chronicle-timeline">
-            {% for chapter in chapters %}
+            {% for chapter in story.missions %}
             <!-- Preserve the existing title/completed contract; neither order nor missing completion proves a lock or current mission. -->
             <li
               class="chronicle-entry {% if chapter.completed %}chronicle-entry--complete{% endif %}"
@@ -187,6 +189,7 @@
             </li>
             {% endfor %}
           </ol>
+          {% endfor %}
           <p class="chronicle-data-note">
             Showing the missions currently supplied by the backend, rather than
             the full story catalogue. Completion reflects the configured

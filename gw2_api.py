@@ -110,3 +110,21 @@ def group_missions_by_story(missions):
     return story_groups
 
 
+def build_journal_stories(stories, story_groups):
+    journal_stories = []
+
+    for story in stories:
+        # Create one journal record using the API story's ID and name.
+        journal = {}
+        journal["id"] = story["id"]
+        journal["title"] = story["name"]
+
+        # Match prepared missions by story ID rather than by list position.
+        journal["missions"] = story_groups[story["id"]]
+
+        # Retain every combined record, not just the last story in the loop.
+        journal_stories.append(journal)
+
+    return journal_stories
+
+

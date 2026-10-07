@@ -1,7 +1,7 @@
 # Read a secret without displaying it in the terminal.
 from getpass import getpass
 
-from gw2_api import get_character_quest_ids, get_quests, build_mission_records, get_stories, group_missions_by_story
+from gw2_api import get_character_quest_ids, get_quests, build_mission_records, get_stories, group_missions_by_story, build_journal_stories
 
 # Keep the key in memory for this script run.
 api_key = getpass("GW2 API key: ").strip()
@@ -31,19 +31,8 @@ story_ids = list(story_groups.keys())
 stories = get_stories(story_ids)
 
 # Collect named stories with their matching mission lists.
-journal_stories = []
 
-for story in stories:
-    # Create one journal record using the API story's ID and name.
-    journal = {}
-    journal["id"] = story["id"]
-    journal["title"] = story["name"]
-
-    # Match prepared missions by story ID rather than by list position.
-    journal["missions"] = story_groups[story["id"]]
-
-    # Retain every combined record, not just the last story in the loop.
-    journal_stories.append(journal)
+journal_stories = build_journal_stories(stories, story_groups)
 
 # Inspect the combined story and mission structure.
 print(journal_stories)

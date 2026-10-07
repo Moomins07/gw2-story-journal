@@ -70,6 +70,36 @@ After initially sharing output from the grouping stage, I reran the script and s
 
 Useful commit point: `Extract mission grouping helper and preserve named story output`.
 
+## Step 5: Extract story combination
+
+I moved the named-story construction loop into `build_journal_stories(stories, story_groups)` in `gw2_api.py`. It creates a list, builds each record using the story ID and name, attaches the matching mission list by ID, appends inside the loop, and returns after the loop. The exploration script imports and calls it after fetching story descriptions.
+
+The guide reviewed the helper and caller and found their structure and execution order correct. I reported completing the changes; unchanged runtime output for this specific refactor has not yet been supplied or independently verified.
+
+**I learned:** Functions receive the data they need through parameters and return prepared data to their caller. This helper makes no HTTP requests and performs no printing. Keeping the transformation separate lets both the script and Flask reuse it.
+
+Remaining readability improvement: add a purpose comment above the helper definition. Suggested check: rerun the script and confirm the same `My Story` record and three missions. Useful commit point: `Extract journal story preparation helper`.
+
+Next, call these shared helpers from the Chronicle route, keeping its existing failure handling, before updating the frontend to show nested stories and missions.
+
+## Step 6: Prepare named story groups in Flask
+
+I imported the grouping, story-request, and story-combination helpers into `app.py`. Inside the existing try block, the Chronicle route groups prepared missions, collects story IDs, fetches descriptions, and builds `journal_stories`. The guide reviewed the sequence and found it correct. Runtime behavior for this route change has not yet been reported or independently verified.
+
+I placed `request_stage = "story descriptions"` before `get_stories(story_ids)`. This correctly identifies a failure in that request. The variable labels the next operation for the exception logger; it does not initiate an API request.
+
+The successful return deliberately still passes `missions` as `chapters`, so the current frontend remains unchanged. `journal_stories` is prepared but not yet passed to the template. Next, update the template contract and rendering together, including the error returns, to display stories containing missions.
+
+## Step 7: Display nested stories and missions
+
+I passed `journal_stories` into the successful template response as `stories`, and added `stories=[]` to both error returns. The existing `chapters` variable remains for the total mission count.
+
+In `chronicle.html`, I added an outer Jinja loop over stories, displayed each story title, and changed the inner loop to use `story.missions`. Each story now has its own mission list. The guide reviewed the saved route and loop boundaries and found them correctly connected. I reported the page working; the guide did not independently run the authenticated page.
+
+**I learned:** This is a Jinja template loop within HTML, rather than XML. The outer loop chooses a story and the inner loop renders that story's missions. Passing empty lists on error paths keeps the template's inputs consistent. The inner `loop.index` starts again for each story and is a display counter, not an API mission ID or verified story order.
+
+Remaining readability task: comment the outer loop's purpose. Useful commit point: `Display story headings above grouped missions`. We still display only three selected missions; chapter mapping and wider catalogue coverage are separate future steps.
+
 ## Git and blog ideas
 
 Useful commit point after checking: `Preserve parent story IDs in mission records`.
