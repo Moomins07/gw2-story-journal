@@ -49,3 +49,9 @@ I wrote load_journal_act to load character quest IDs, create the completion set,
 Initially I assigned the result to load_journal_act, overwriting the function name with a dictionary. I corrected the result variable to journal_act. The guide reviewed the current source and confirmed the script calls the loader once and prints the returned dictionary. I supplied runtime output showing expected 6, missing 0, completed 6, and all six missions in catalogue order. The supplied count lines are not present in the current saved script, which only prints the dictionary; their values agree with its returned fields. No independent authenticated request was made.
 
 Useful commit point: `Add reusable journal act loader`. Next, use this loader in Flask's existing Chronicle route before connecting it to the separate Act Journal route. The shared loader hides multiple request stages, so the route's diagnostic label must describe loading the act rather than claim every failure happened during character progress. This contributes original reusable Python code toward Boot.dev.
+
+## Chronicle uses the shared loader
+
+I replaced Chronicle's request-and-preparation sequence with one load_journal_act call inside its existing try block, and changed request_stage to act loading. The guide reviewed configuration validation, RequestException handling, safe logging, and the successful template arguments as preserved. I reported that the page works; no independent live request was performed.
+
+Minor cleanup remains: remove the four unused lower-level helper imports from app.py and add a purpose comment above the loader call. The separate Act Journal route still passes catalogue data only, so connecting prepared data there remains the next functional step.

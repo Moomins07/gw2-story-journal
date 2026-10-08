@@ -4,7 +4,7 @@ from flask import Flask, render_template, jsonify, abort
 # Read configuration supplied to this Python process.
 import os
 # Reuse our helpers for requesting GW2 data and preparing journal records.
-from gw2_api import load_character_quest_ids, load_quests, build_mission_records, build_journal_act
+from gw2_api import load_journal_act
 
 # Use the catalogue's expected checklist independently of character completion.
 from journal_catalog import act
@@ -51,28 +51,10 @@ def chronicle():
         ), 503
 
     # Label the next request for diagnostics; this assignment makes no API call.
-    request_stage = "character progress"
+    request_stage = "act loading"
     try:
-        # Request character-specific progress as a list of numeric quest IDs.
-        # The helper checks the HTTP status and parses the returned JSON.
-        character_quest_ids = load_character_quest_ids(api_key, character_name)
-
-        # Use a set to check whether each expected mission is reported complete.
-        completed_ids = set(character_quest_ids)
-
-        # Select the act's expected missions, including IDs absent from character progress.
-        # The catalogue also defines their narrative order for the act builder.
-        selected_quest_ids = act['quest_ids']
-        # Label and fetch public mission descriptions for the selected numeric IDs.
-        request_stage = "mission descriptions"
-        quests = load_quests(selected_quest_ids)
-
-        # Prepare id/title/story_id/completed records without making another request.
-        # The completed flag checks whether each mission ID appears in the character set.
-        missions = build_mission_records(quests, completed_ids)
-
-        # Combine the act's identity with its mission dictionaries in catalogue order.
-        journal_act = build_journal_act(act, missions)
+        # Load the expected missions and prepare this character's ordered act progress.
+        journal_act = load_journal_act(api_key, character_name, act)
         
 
 
@@ -110,12 +92,15 @@ def chronicle():
 @app.get("/chronicle/acts/<act_id>")
 def chronicle_acts(act_id):
 
+    # Render the shared journal template only for an ID present in our catalogue.
     if act_id == act['id']:
+        # Supply catalogue data for now; live mission progress will be connected next.
         return render_template(
             "acts_journal.html",
             journal_act=act
             )
 
+    # Stop unknown act requests with Flask's Not Found response.
     abort(404)
     
 
