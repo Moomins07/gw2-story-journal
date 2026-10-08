@@ -16,6 +16,10 @@ Simple notes about building **gw2-story-journal**, my Boot.dev personal project.
 
 ## Keeping this folder updated
 
+## Planned steps
+
+- [Deploying Flask from main with Render](09-render-deployment.md) — setup walkthrough prepared; deployment not yet verified.
+
 After each completed guided step, update its entry or add a numbered Markdown file and link it here. Describe what changed, why it works, what I learned, mistakes worth remembering, checks, and possible blog topics. Explain code examples with comments. Distinguish reported checks from suggested checks. Do not invent development hours or test results.
 
 ## Boot.dev progress
