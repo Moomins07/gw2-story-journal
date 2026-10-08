@@ -4,10 +4,13 @@ from urllib.parse import quote
 # Send HTTP requests to Guild Wars 2.
 import requests
 
+from journal_catalog import act
 
 
-# Return the quest IDs reported for one character.
-def get_character_quest_ids(api_key, character_name):
+
+
+# Load character progress from GW2; load_ helpers make external API requests.
+def load_character_quest_ids(api_key, character_name):
     # Encode this character's name as one URL segment.
     encoded_name = quote(character_name, safe="")
 
@@ -27,8 +30,8 @@ def get_character_quest_ids(api_key, character_name):
     return character_quest_ids
 
 
-# Fetch API quest records: individual missions containing goals, not chapters.
-def get_quests(quest_ids):
+# Load public API quest records: individual missions containing goals, not chapters.
+def load_quests(quest_ids):
     # Collect the IDs as strings because join requires string values.
     id_strings = []
 
@@ -53,9 +56,9 @@ def get_quests(quest_ids):
     return quests
 
 
-# Fetch literal API story records; their chapters field may contain names or be empty.
+# Load literal API story records; their chapters field may contain names or be empty.
 # An API story is not always an entire expansion or the journal's act grouping.
-def get_stories(story_ids):
+def load_stories(story_ids):
     # Collect the IDs as strings because join requires string values.
     id_strings = []
 
@@ -180,4 +183,30 @@ def build_journal_act(act, missions):
     
 
     # Return the finished act dictionary to the script or Flask route that called us.
+    return journal_act
+
+# Load character progress and the expected quest descriptions, then build one journal act.
+# The caller handles configuration, printing, rendering, and any request failures.
+def load_journal_act(api_key, character_name, act):
+    # Request the quest IDs reported by GW2 for this character.
+    # These are numbers identifying missions, not mission names or descriptions.
+    character_quest_ids = load_character_quest_ids(api_key, character_name)
+
+    # Use a set to efficiently check whether a mission ID is reported complete.
+    completed_ids = set(character_quest_ids)
+
+    # Select the act's expected mission IDs from our journal catalogue.
+    # This checklist is independent of which missions the character has completed.
+    selected_quest_ids = act['quest_ids']
+
+    # Look up the selected IDs to get public mission names and parent story IDs.
+    quests = load_quests(selected_quest_ids)
+
+    # Convert API quests into mission dictionaries and mark their reported completion.
+    missions = build_mission_records(quests, completed_ids)
+
+    # Apply catalogue order and calculate completion, expected, and missing counts.
+    journal_act = build_journal_act(act, missions)
+
+    # Supply the prepared dictionary to the caller without printing or rendering it here.
     return journal_act

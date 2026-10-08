@@ -4,7 +4,7 @@ from flask import Flask, render_template, jsonify, abort
 # Read configuration supplied to this Python process.
 import os
 # Reuse our helpers for requesting GW2 data and preparing journal records.
-from gw2_api import get_character_quest_ids, get_quests, build_mission_records, build_journal_act
+from gw2_api import load_character_quest_ids, load_quests, build_mission_records, build_journal_act
 
 # Use the catalogue's expected checklist independently of character completion.
 from journal_catalog import act
@@ -55,7 +55,7 @@ def chronicle():
     try:
         # Request character-specific progress as a list of numeric quest IDs.
         # The helper checks the HTTP status and parses the returned JSON.
-        character_quest_ids = get_character_quest_ids(api_key, character_name)
+        character_quest_ids = load_character_quest_ids(api_key, character_name)
 
         # Use a set to check whether each expected mission is reported complete.
         completed_ids = set(character_quest_ids)
@@ -65,7 +65,7 @@ def chronicle():
         selected_quest_ids = act['quest_ids']
         # Label and fetch public mission descriptions for the selected numeric IDs.
         request_stage = "mission descriptions"
-        quests = get_quests(selected_quest_ids)
+        quests = load_quests(selected_quest_ids)
 
         # Prepare id/title/story_id/completed records without making another request.
         # The completed flag checks whether each mission ID appears in the character set.
